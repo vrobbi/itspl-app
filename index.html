@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<head>
+<meta name="google-site-verification" content="WC9FfWNfVRyJn8pWPXTHM4uCe_p-U13-iz0dV8A6puk" />
+<meta charset="utf-8"/>
+<meta name="keywords" content="lavagna collaborativa, disegnare on line, applicazione real time, multiuser whiteboard, realtime application, drawing on line, drawing game, html5, web 2.0, software, internet, image capture, webcam" />
+<meta name="description" content="lavagna multiutente condivisa in tempo reale,multiuser whiteboard real time application, draw on line and share your draw with all on the net" />
+
+        <meta charset="utf-8" />
+        <title>Real time whiteboard collaborative multicolor multiusers with chat and upload images</title>
+
+        <!-- The stylesheets -->
+        <link rel="stylesheet" href="assets/css/styles.css" />
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+			        <!--[if lt IE 9]>
+          <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+	
+    </head>    
+    <body>
+	
+<div id="controlli">	
+<div style="float:left;">
+<button id="cancellalavagna">Clear your board</button><br />
+<select id="spessore">
+  <option value="3" selected="selected">width</option>
+  <option value="1">1</option>
+	<option value="2">2</option>
+	<option value="3">3</option>
+    <option value="4">4</option>
+	<option value="5">5</option>
+	<option value="6">6</option>
+	<option value="7">7</option>
+	<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+<option value="13">13</option>
+<option value="13">14</option>
+<option value="15">15</option>
+<option value="16">16</option>
+<option value="17">17</option>
+<option value="18">18</option>
+<option value="19">19</option>
+<option value="20">20</option>
+</select>	
+<select id="fontsize">
+  <option value="14" selected="selected">font size</option>
+  <option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+<option value="16">16</option>
+<option value="17">17</option>
+<option value="18">18</option>
+<option value="19">19</option>
+<option value="20">20</option>
+<option value="21">21</option>
+<option value="22">22</option>
+<option value="23">23</option>
+<option value="24">24</option>
+<option value="25">25</option>
+<option value="26">26</option>
+<option value="27">27</option>
+<option value="28">28</option>
+<option value="29">29</option>
+<option value="30">30</option>
+</select><br />
+At first double click on the whiteboard<br />where you want to place your photo,<br />
+then upload file .jpg to share with all<br />
+<input type="file" id="file-input"> <br />
+Double click on the whiteboard where <br />you want to place the text<br />or enter if you want to chat
+</div>
+<div id="frecce" onMouseOver="javascript:document.getElementById('frecce').style.backgroundColor ='#ffffff';">
+<div style="padding-bottom:50%;vertical-align:middle;">
+<span style="font-size:28px;font-weight:"600">&nbsp;<br />&nbsp;<br />P<br />A<br />N<br />E<br />L</span>
+</div>
+
+</div>
+</div>
+		<div id="cursors">
+	    	<!-- The mouse pointers will be created here -->
+		</div>
+		
+  <img id="canvasimg" alt="" style="position:absolute;left:300px;top:10px;border:none;cursor:pointer;width:1900px;height:1000px;visibility:hidden;" /> 
+		<canvas id="paper" width="1900" height="1000">
+			Your browser needs to support canvas for this to work!
+		</canvas>
+	  <hgroup id="instructions">		
+			<h1>Draw anywhere!</h1> 
+			<h2>You will see everyone else who's doing the same.</h2>
+			<h3>If you like this web application please click the button LIKE at the bottom of this page</h3>
+		</hgroup>
+		
+       <footer>
+	        </footer>
+        
+        <!-- JavaScript includes. Notice that socket.io.js is served by node.js -->
+		<script src="/socket.io/socket.io.js"></script>    
+	<script src="assets/js/script.js"></script>
+    </body>
+</html>         
