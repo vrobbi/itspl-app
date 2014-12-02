@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <head>
-<meta name="google-site-verification" content="WC9FfWNfVRyJn8pWPXTHM4uCe_p-U13-iz0dV8A6puk" />
 <meta charset="utf-8"/>
 <meta name="keywords" content="lavagna collaborativa, disegnare on line, applicazione real time, multiuser whiteboard, realtime application, drawing on line, drawing game, html5, web 2.0, software, internet, image capture, webcam" />
 <meta name="description" content="lavagna multiutente condivisa in tempo reale,multiuser whiteboard real time application, draw on line and share your draw with all on the net" />
@@ -11,17 +10,28 @@
         <!-- The stylesheets -->
         <link rel="stylesheet" href="assets/css/styles.css" />
 		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	 	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script> 
+		<link rel="stylesheet" type="text/css" href="assets/css/jquery-ui-css.css" />
+		 
 			        <!--[if lt IE 9]>
           <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
+				<script type="text/javascript">
+  	$(document).ready( function(){
 	
+
+  	
+  	});
+  	
+  	
+  </script>	
+		
     </head>    
     <body>
+	<div id="divrubber" title="double click to delete" alt="double to delete">Double click to delete</div>
 	
 <div id="controlli">	
 <div style="float:left;">
-<button id="cancellalavagna">Clear your board</button><br />
 <select id="spessore">
   <option value="3" selected="selected">width</option>
   <option value="1">1</option>
@@ -88,13 +98,12 @@ Double click on the whiteboard where <br />you want to place the text<br />or en
 		</div>
 		
   <img id="canvasimg" alt="" style="position:absolute;left:300px;top:10px;border:none;cursor:pointer;width:1900px;height:1000px;visibility:hidden;" /> 
-		<canvas id="paper" width="1900" height="1000">
+		<canvas id="respondcanvas" width="1900" height="1000">
 			Your browser needs to support canvas for this to work!
 		</canvas>
 	  <hgroup id="instructions">		
 			<h1>Draw anywhere!</h1> 
-			<h2>You will see everyone else who's doing the same.</h2>
-			<h3>If you like this web application please click the button LIKE at the bottom of this page</h3>
+			<h2>NGS APP</h2>			
 		</hgroup>
 		
        <footer>
@@ -103,5 +112,5 @@ Double click on the whiteboard where <br />you want to place the text<br />or en
         <!-- JavaScript includes. Notice that socket.io.js is served by node.js -->
 		<script src="/socket.io/socket.io.js"></script>    
 	<script src="assets/js/script.js"></script>
-    </body>
+	 </body>
 </html>         

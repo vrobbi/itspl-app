@@ -26,7 +26,7 @@ request.addListener('end', function () {
 }
 
 // Delete this row if you want to see debug messages
-//io.set('log level', 1);
+io.set('log level', 1);
 
 // Heroku doesn't support websockets so...
 // Detect if heroku via config vars
@@ -42,12 +42,11 @@ if (process.env.HEROKU === 'true') {
 
 // Listen for incoming connections from clients
 io.sockets.on('connection', function (socket) {
-socket.join('public');   
-/*
+//   socket.join('public');   
 socket.on('setuproom', function (data) { 
- var myregexp = /^[a-zA-Z0-9]+$/;
+ var myregexp = /^[0-9]+$/;
  	if (myregexp.test(data.room)=== true)   {
-socket.leave('public');
+// socket.leave('public');
  socket.join(data.room);
  socket.nickname = data.usernamerem;
      // console.log (Object.keys(io.sockets.manager.rooms));
@@ -58,7 +57,15 @@ roster.forEach(function(client) {
 listautenti =	listautenti +  client.nickname + '<br />';
 }); 
 
- */
+//socket.emit('setuproomser', {
+//			'room' :  data.room,
+//				'inforoom' : 'YOUR ROOM NAME IS VALID,<br />NOW YOUR PRIVATE ROOM IS ' + data.room + '<br />'				
+//			});
+	}
+	
+	}); 
+
+ 
 
 	// Start listening for mouse move events
 	socket.on('mousemove', function (data) {
@@ -67,6 +74,10 @@ listautenti =	listautenti +  client.nickname + '<br />';
 		socket.broadcast.to(data.room).emit('moving', data);
 	    //	}  
 	});
+	
+		socket.on('deletezone', function (data) {
+	socket.broadcast.to(data.room).emit('deletezoneser', data);
+ });
 	
 
 socket.on('doppioclick', function (data) {

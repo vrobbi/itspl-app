@@ -1,27 +1,35 @@
 jQuery(function(){
-
 	// This demo depends on the canvas element
 	if(!('getContext' in document.createElement('canvas'))){
 		alert('Sorry, it looks like your browser does not support canvas!');
 		return false;
 	}     	
-	
+jQuery("#divrubber").draggable({ cursor: "move" }).resizable();		
+document.getElementById('divrubber').style.width="70px";
+document.getElementById('divrubber').style.height="70px";
 	// The URL of your web server (the port is set in app.js)
-	//var url = 'http://localhost:3000';
+	//var url = 'http://localhost:3000'
+	var color ='';
+	var username = '';
+	var roomid = '';
     var url = window.location.hostname;
-	var stanza = '';
-	if (location.href.indexOf('#')!= -1){
-stanza  = location.href.substring(location.href.indexOf('#')+1);
- }
+	color = getParameterByName('color');
+	if (color.length == 6){  color = '#' + color};
+	
+	username = getParameterByName('username');
+	if (username.length > 1 && username.length < 20){  username = getParameterByName('username')};
+	
+	roomid = getParameterByName('roomID');
+	if (roomid.length > 0){  roomid = getParameterByName('roomID')};	
+	
 	
 	var positionx ='23';
 	var positiony='0';
 
 	var doc = jQuery(document),
-		canvas = jQuery('#paper'),
+		canvas = jQuery('#respondcanvas'),
 		canvas1 = jQuery('#paper1'),
 	instructions = jQuery('#instructions');
-var color = '#000000';
 	// A flag for drawing activity
 	var drawing = false;
 	var clients = {};
@@ -29,15 +37,8 @@ var color = '#000000';
 	
 	//  funzione richiesta di nick name   
 	
-	var username = '';
-				
 
-if(!username)
-{
-	username = prompt("Hey there, insert your nick name, please", "");
-}
-
-username = username.substr(0,20);	
+//  username = username.substr(0,30);	
 var socket = io.connect(url); 
 
 var ctx = canvas[0].getContext('2d');	
@@ -55,58 +56,27 @@ var colorem;
  ctx.font = "20px Tahoma";
 
 	// Generate an unique ID
-	var id = Math.round(jQuery.now()*Math.random());
-if (username =='')  {username = id }
 //url.substring(url.indexOf('#')+1);
 
-if (stanza.length > 2) {
+if (roomid.length > 0 ) {
 socket.emit('setuproom',{
-				'room': stanza,				
-				'id': id,
+				'room': roomid,				
 				'usernamerem' : username
 			});
-} else {
-socket.emit('setuproom',{
-				'room': 'public',				
-				'id': id,
-				'usernamerem' : username
-			});      
 }
 
 socket.on('setuproomserKO', function (data) {
 stanza = data.room;	
-document.getElementById('audiocall').disabled = false;
-document.getElementById('videocall').disabled = false;
 alert	(data.inforoom); 	
 });
  
   socket.on('setuproomser', function (data) {
 stanza = data.room;	
- jQuery('<div class="testochatser"><span>FROM SERVER:</span> '+ data.inforoom + data.listautenti +'</div>').appendTo('#testichat');
- document.getElementById('frecce').style.backgroundColor ='#ffff00';
+ alert('<div class="testochatser"><span>FROM SERVER: </span> '+ data.inforoom + data.listautenti +'</div>');
+// document.getElementById('frecce').style.backgroundColor ='#ffff00';
  
 	});
 
-
-jQuery('#scrivi').keypress(function(e){
-var code = e.keyCode;
-if (code == '13') {
-  if (document.getElementById('scrivi').value.length > 0 ) {	
- 
- socket.emit('chat',{
-				'testochat': document.getElementById('scrivi').value,				
-				'id': id,
-				'usernamerem' : username,
-				'room' : stanza
-			});
- jQuery('<div class="testochat"><span>ME:</span> ' + document.getElementById('scrivi').value +'</div>').appendTo('#testichat');
-  document.getElementById('scrivi').value ='';
-
-var objDiv = document.getElementById("testichat");
-objDiv.scrollTop = objDiv.scrollHeight;
-
-}}
-});
 
 $('#file-input').change(function(e) {
         var file = e.target.files[0],
@@ -131,7 +101,7 @@ socket.emit('salvasulserver',{
 			});										  
 });
 
-*/
+
 
 
 jQuery('#paper').dblclick(function (e){
@@ -157,9 +127,25 @@ document.getElementById('scrivi').value ='';
 }	
 									
 });	
+*/
 
- jQuery('#cancellalavagna').click(function (){
-ctx.clearRect(0, 0, canvas[0].width, canvas[0].height);													  
+
+
+ jQuery('#divrubber').dblclick(function (){
+var divrubber = jQuery("#divrubber");
+			var posizionerubber = divrubber.position();
+			var rubberwidth =   document.getElementById('divrubber').style.width;
+			var rubberheight = document.getElementById('divrubber').style.height;
+ctx.clearRect(posizionerubber.left, posizionerubber.top, rubberwidth.substr(0,rubberwidth.length -2), rubberheight.substr(0,rubberheight.length -2));	
+socket.emit('deletezone',{
+				'x': posizionerubber.left,
+				'y': posizionerubber.top,
+				'width': rubberwidth.substr(0,rubberwidth.length -2),
+				'height': rubberheight.substr(0,rubberheight.length -2),
+			    'usernamerem' : username,
+				'spessremo' : document.getElementById('spessore').value,
+				'room' : roomid				
+			});
 });
  
  
@@ -180,6 +166,10 @@ ctx.drawImage(imgdaclient, data.positionx, data.positiony);
 	ctx.fillText(data.scrivi, data.x, data.y); 
           
 	});	
+ 
+  socket.on('deletezoneser', function (data) {
+ctx.clearRect(data.x, data.y, data.width, data.height); 
+   });	
  
 
   
@@ -206,8 +196,8 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
 			// Draw a line on the canvas. clients[data.id] holds
 			// the previous position of this user's mouse pointer
 
-            ctx.strokeStyle = data.color;
-			drawLinerem(clients[data.id].x, clients[data.id].y, data.x, data.y,data.spessremo,data.color);
+         //   ctx.strokeStyle = data.colorem;
+			drawLinerem(clients[data.id].x, clients[data.id].y, data.x, data.y,data.spessremo,data.colorem);
 		}
 		
 		// Saving the current client state
@@ -256,10 +246,10 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
 				'x': e.pageX,
 				'y': e.pageY,
 				'drawing': drawing,
-				'id': id,
-				'usernamerem' : username,
+			    'usernamerem' : username,
 				'spessremo' : document.getElementById('spessore').value,
-				'room' : stanza
+				'room' : roomid,
+				'colorem': color
 			});
 			lastEmit = jQuery.now();
 		}
@@ -268,8 +258,8 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
 		
 		if(drawing){
 
-       //     ctx.strokeStyle = document.getElementById('minicolore').value;
-			drawLine(prev.x, prev.y, e.pageX, e.pageY);
+           
+			drawLine(prev.x, prev.y, e.pageX, e.pageY, color);
 			prev.x = e.pageX;
 			prev.y = e.pageY;
 		}
@@ -294,7 +284,8 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
         jQuery('#onlineCounter').html('Users connected: '+totalOnline);
     },16000);
 //// end setinterval function ****************************
-	function drawLine(fromx, fromy, tox, toy){
+	function drawLine(fromx, fromy, tox, toy, color){
+		ctx.strokeStyle = color;
 	   ctx.lineWidth = document.getElementById('spessore').value;	
         ctx.beginPath();
 		ctx.moveTo(fromx, fromy);
@@ -327,6 +318,13 @@ function fileOnload(e) {
 				});	
         });
     }
+	
+	function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
 	
 (function() {
 
