@@ -69,8 +69,8 @@ listautenti =	listautenti +  client.nickname + '<br />';
 
 	// Start listening for mouse move events
 	socket.on('mousemove', function (data) {
-			
-	//	if (data.room !='' || data.room !='public') {		
+		
+	//	if (data.room !='' || data.room !='public') {
 		socket.broadcast.to(data.room).emit('moving', data);
 	    //	}  
 	});

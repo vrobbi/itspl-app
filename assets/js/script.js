@@ -7,17 +7,20 @@ jQuery(function(){
 jQuery("#divrubber").draggable({ cursor: "move" }).resizable();		
 document.getElementById('divrubber').style.width="70px";
 document.getElementById('divrubber').style.height="70px";
+document.getElementById('size1').style.border="2px solid orange";
+// document.getElementByClassName("sizepencil").style.border =""; 
 	// The URL of your web server (the port is set in app.js)
 	//var url = 'http://localhost:3000'
 	var color ='';
 	var username = '';
 	var roomid = '';
+	var pencilsize = 1;
     var url = window.location.hostname;
 	color = getParameterByName('color');
 	if (color.length == 6){  color = '#' + color};
 	
 	username = getParameterByName('username');
-	if (username.length > 1 && username.length < 20){  username = getParameterByName('username')};
+	if (username.length > 1 && username.length < 25){  username = getParameterByName('username')};
 	
 	roomid = getParameterByName('roomID');
 	if (roomid.length > 0){  roomid = getParameterByName('roomID')};	
@@ -32,6 +35,8 @@ document.getElementById('divrubber').style.height="70px";
 	instructions = jQuery('#instructions');
 	// A flag for drawing activity
 	var drawing = false;
+	var controlpencil = true;
+	var controlrubber = false;
 	var clients = {};
 	var cursors = {};
 	
@@ -54,29 +59,81 @@ var colorem;
     ctx.lineJoin = 'round';
     ctx.lineWidth =  2;
  ctx.font = "20px Tahoma";
-
-	// Generate an unique ID
-//url.substring(url.indexOf('#')+1);
-
-if (roomid.length > 0 ) {
+ 
+ if (roomid.length > 2) {
 socket.emit('setuproom',{
 				'room': roomid,				
 				'usernamerem' : username
 			});
+} else {
+
+
 }
 
-socket.on('setuproomserKO', function (data) {
-stanza = data.room;	
-alert	(data.inforoom); 	
-});
- 
-  socket.on('setuproomser', function (data) {
-stanza = data.room;	
- alert('<div class="testochatser"><span>FROM SERVER: </span> '+ data.inforoom + data.listautenti +'</div>');
-// document.getElementById('frecce').style.backgroundColor ='#ffff00';
- 
-	});
+	// Generate an unique ID
+//url.substring(url.indexOf('#')+1);
 
+  
+ $('#rubber').click(function(e) {
+document.getElementById('rubber').style.border="2px solid orange";
+document.getElementById('pencil').style.border="";
+document.getElementById('divrubber').style.display="block";
+controlrubber = true;
+controlpencil = false;
+    });	
+ 
+ $('#pencil').click(function(e) {
+document.getElementById('pencil').style.border="2px solid orange";
+document.getElementById('rubber').style.border="";
+controlrubber = false;
+controlpencil = true;
+document.getElementById('divrubber').style.display="none";
+    });
+ 
+  $('#size1').click(function(e) {
+document.getElementById('size1').style.border="2px solid orange";
+document.getElementById('size2').style.border="";
+document.getElementById('size3').style.border="";
+document.getElementById('size4').style.border="";
+document.getElementById('size5').style.border="";
+pencilsize = 1;
+    });
+  
+    $('#size2').click(function(e) {
+document.getElementById('size2').style.border="2px solid orange";
+document.getElementById('size1').style.border="";
+document.getElementById('size3').style.border="";
+document.getElementById('size4').style.border="";
+document.getElementById('size5').style.border="";
+pencilsize = 2;
+    });
+	
+	  $('#size3').click(function(e) {
+document.getElementById('size3').style.border="2px solid orange";
+document.getElementById('size2').style.border="";
+document.getElementById('size1').style.border="";
+document.getElementById('size4').style.border="";
+document.getElementById('size5').style.border="";
+pencilsize = 7;
+    });
+	  
+	    $('#size4').click(function(e) {
+document.getElementById('size4').style.border="2px solid orange";
+document.getElementById('size2').style.border="";
+document.getElementById('size3').style.border="";
+document.getElementById('size1').style.border="";
+document.getElementById('size5').style.border="";
+pencilsize = 15;
+    });
+$('#size5').click(function(e) {
+document.getElementById('size5').style.border="2px solid orange";
+document.getElementById('size2').style.border="";
+document.getElementById('size3').style.border="";
+document.getElementById('size4').style.border="";
+document.getElementById('size1').style.border="";
+pencilsize = 25;
+    });
+ 
 
 $('#file-input').change(function(e) {
         var file = e.target.files[0],
@@ -90,7 +147,7 @@ $('#file-input').change(function(e) {
 		     
     });	
 
-/*
+
 jQuery('#salvasulserver').click(function (){
 var dataserver = canvas[0].toDataURL();
 
@@ -127,7 +184,7 @@ document.getElementById('scrivi').value ='';
 }	
 									
 });	
-*/
+
 
 
 
@@ -143,7 +200,7 @@ socket.emit('deletezone',{
 				'width': rubberwidth.substr(0,rubberwidth.length -2),
 				'height': rubberheight.substr(0,rubberheight.length -2),
 			    'usernamerem' : username,
-				'spessremo' : document.getElementById('spessore').value,
+				'spessremo' : pencilsize,
 				'room' : roomid				
 			});
 });
@@ -170,17 +227,10 @@ ctx.drawImage(imgdaclient, data.positionx, data.positiony);
   socket.on('deletezoneser', function (data) {
 ctx.clearRect(data.x, data.y, data.width, data.height); 
    });	
- 
 
-  
-  socket.on('listautentiser', function (data) {
-jQuery('<div class="testochatser"><span>FROM SERVER:</span> '+ data.listautenti +'</div>').appendTo('#testichat');
-document.getElementById('frecce').style.backgroundColor ='#ffff00'; 
-		});
- 	
 	socket.on('moving', function (data) {
-		
-		if(! (data.id in clients)){
+								  console.log(data.room);
+		if(!(data.id in clients)){
 			// a new user has come online. create a cursor for them
 			cursors[data.id] = jQuery('<div class="cursor"><div class="identif">'+ data.usernamerem +'</div>').appendTo('#cursors');
 		}
@@ -191,7 +241,7 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
 		});
 			
 		// Is the user drawing?
-		if(data.drawing && clients[data.id]){
+		if(data.drawing && data.controlpencil && clients[data.id]){
 			
 			// Draw a line on the canvas. clients[data.id] holds
 			// the previous position of this user's mouse pointer
@@ -214,10 +264,6 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
   
 // document.addEventListener("blur", cambiacolore(), true);
 		  
-   document.addEventListener("change", cambiaspessore, true);
-  function cambiaspessore () {
-	   ctx.lineWidth = document.getElementById('spessore').value;	   
-}  
       
 	canvas.on('mousedown', function(e){
 		e.preventDefault();
@@ -246,8 +292,9 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
 				'x': e.pageX,
 				'y': e.pageY,
 				'drawing': drawing,
+				'controlpencil': controlpencil,
 			    'usernamerem' : username,
-				'spessremo' : document.getElementById('spessore').value,
+				'spessremo' : pencilsize,
 				'room' : roomid,
 				'colorem': color
 			});
@@ -256,7 +303,7 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
 		// Draw a line for the current user's movement, as it is
 		// not received in the socket.on('moving') event above
 		
-		if(drawing){
+		if(drawing && controlpencil){
 
            
 			drawLine(prev.x, prev.y, e.pageX, e.pageY, color);
@@ -286,7 +333,7 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
 //// end setinterval function ****************************
 	function drawLine(fromx, fromy, tox, toy, color){
 		ctx.strokeStyle = color;
-	   ctx.lineWidth = document.getElementById('spessore').value;	
+	   ctx.lineWidth = pencilsize;	
         ctx.beginPath();
 		ctx.moveTo(fromx, fromy);
 		ctx.lineTo(tox, toy);
@@ -326,18 +373,7 @@ function fileOnload(e) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 	
-(function() {
 
-  var streaming = false,
-      video        = document.getElementById('video'),
-  	paper1  = document.getElementById('paper1'),
-      startbutton  = document.getElementById('catturacam'),
-      width = 320,
-      height = 240;
-
- 
-   
-})();
 
 });
 
