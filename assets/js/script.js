@@ -11,10 +11,13 @@ document.getElementById('size1').style.border="2px solid orange";
 // document.getElementByClassName("sizepencil").style.border =""; 
 	// The URL of your web server (the port is set in app.js)
 	//var url = 'http://localhost:3000'
+	var imageBG ='';
 	var color ='';
 	var username = '';
 	var roomid = '';
 	var pencilsize = 1;
+	var positionx ='23';
+	var positiony='0';
     var url = window.location.hostname;
 	color = getParameterByName('color');
 	if (color.length == 6){  color = '#' + color};
@@ -25,34 +28,35 @@ document.getElementById('size1').style.border="2px solid orange";
 	roomid = getParameterByName('roomID');
 	if (roomid.length > 0){  roomid = getParameterByName('roomID')};	
 	
-	
-	var positionx ='23';
-	var positiony='0';
-
+			
 	var doc = jQuery(document),
 		canvas = jQuery('#respondcanvas'),
-		canvas1 = jQuery('#paper1'),
+		bgcanvas = jQuery('#bgcanvas'),
 	instructions = jQuery('#instructions');
 	// A flag for drawing activity
+	var ctx = canvas[0].getContext('2d');	
+	var ctx1 = bgcanvas[0].getContext('2d');	
 	var drawing = false;
 	var controlpencil = true;
 	var controlrubber = false;
 	var clients = {};
 	var cursors = {};
+	canvas.width = document.body.clientWidth;
+    canvas.height = document.body.clientHeight;
 	
 	//  funzione richiesta di nick name   
 	
 
 //  username = username.substr(0,30);	
 var socket = io.connect(url); 
+// var ctx1 = canvas1.getContext('2d');
 
-var ctx = canvas[0].getContext('2d');	
+
 var spessore = jQuery('#spessore').value;
 var colorem;
     // Force canvas to dynamically change its size to the same width/height
     // as the browser window.
-    canvas[0].width = document.body.clientWidth;
-    canvas[0].height = document.body.clientHeight;
+    
 
     // ctx setup
     ctx.lineCap = 'round';
@@ -65,10 +69,26 @@ socket.emit('setuproom',{
 				'room': roomid,				
 				'usernamerem' : username
 			});
-} else {
+} 
 
-
-}
+imageBG = getParameterByName('imageBG');
+	if (imageBG.length > 3){ 
+	imageBG = getParameterByName('imageBG');
+	imageobj = new Image();
+	imageobj.src = imageBG;
+	imageobj.onload = function() {
+         ctx1.drawImage(imageobj, positionx, positiony);
+	// loadImages(sources, function(images) {
+									};
+      
+	 // alert(roomid);
+	   socket.emit('loadimage',{
+				'imageBG' : imageBG,
+			    'usernamerem' : username,
+				'room' : roomid				
+			});
+	
+	};	
 
 	// Generate an unique ID
 //url.substring(url.indexOf('#')+1);
@@ -147,7 +167,9 @@ $('#file-input').change(function(e) {
 		     
     });	
 
-
+jQuery('#restore').click(function (){
+ctx.restore();
+});
 jQuery('#salvasulserver').click(function (){
 var dataserver = canvas[0].toDataURL();
 
@@ -157,36 +179,6 @@ socket.emit('salvasulserver',{
 				'orario':  jQuery.now()
 			});										  
 });
-
-
-
-
-jQuery('#paper').dblclick(function (e){
-positionx = e.pageX;
-positiony= e.pageY;
-if (document.getElementById('scrivi').value.length > 1 ) {
-ctx.fillStyle = $('#minicolore').minicolors('rgbaString');
-ctx.font =  document.getElementById('fontsize').value +"px Tahoma";
-ctx.fillText(document.getElementById('scrivi').value, e.pageX, e.pageY); 
-
-socket.emit('doppioclick',{
-				'x': e.pageX,
-				'y': e.pageY,
-				'scrivi': document.getElementById('scrivi').value,				
-				'color': $('#minicolore').minicolors('rgbaString'),
-				'id': id,
-				'spessremo' : document.getElementById('spessore').value,
-				'fontsizerem': document.getElementById('fontsize').value,
-				'room' : stanza
-			});
-
-document.getElementById('scrivi').value ='';
-}	
-									
-});	
-
-
-
 
  jQuery('#divrubber').dblclick(function (){
 var divrubber = jQuery("#divrubber");
@@ -206,7 +198,7 @@ socket.emit('deletezone',{
 });
  
  
- 
+/* 
  socket.on('fileperaltriser', function (data) {
  
 var imgdaclient = new Image();
@@ -216,6 +208,17 @@ imgdaclient.onload = function() {
 ctx.drawImage(imgdaclient, data.positionx, data.positiony);
 }
 });	
+ */
+ 
+  socket.on('loadimageser', function (data) {
+var imgdaclient = new Image();
+//alert(data.imageBG); 
+imgdaclient.src = data.imageBG;
+imgdaclient.onload = function() {
+ ctx1.drawImage(imgdaclient, positionx, positiony);
+ }          
+// alert(imgdaclient.src.toDataURL());
+});
 	
  socket.on('doppioclickser', function (data) {
  ctx.fillStyle = data.color;
@@ -229,7 +232,6 @@ ctx.clearRect(data.x, data.y, data.width, data.height);
    });	
 
 	socket.on('moving', function (data) {
-								  console.log(data.room);
 		if(!(data.id in clients)){
 			// a new user has come online. create a cursor for them
 			cursors[data.id] = jQuery('<div class="cursor"><div class="identif">'+ data.usernamerem +'</div>').appendTo('#cursors');
@@ -284,7 +286,7 @@ ctx.clearRect(data.x, data.y, data.width, data.height);
 
 	doc.on('mousemove', function(e){
 								 
-		if(jQuery.now() - lastEmit > 30){
+		if(jQuery.now() - lastEmit > 25){
 			
 //	document.getElementById('risultato').innerHTML = $('#minicolore').minicolors('rgbaString');
 			
@@ -305,10 +307,11 @@ ctx.clearRect(data.x, data.y, data.width, data.height);
 		
 		if(drawing && controlpencil){
 
-           
+           ctx.save();
 			drawLine(prev.x, prev.y, e.pageX, e.pageY, color);
 			prev.x = e.pageX;
 			prev.y = e.pageY;
+			
 		}
 	});
 	
@@ -372,7 +375,7 @@ function fileOnload(e) {
         results = regex.exec(location.search);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
-	
+
 
 
 });

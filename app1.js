@@ -96,5 +96,12 @@ socket.on('fileperaltri', function (data) {
 	socket.broadcast.to(data.room).emit('fileperaltriser', data);
 	});	
 
+socket.on('loadimage', function (data) {
+		
+		// This line sends the event (broadcasts it)
+		// to everyone except the originating client.
+	socket.broadcast.to(data.room).emit('loadimageser', data);
+	});	
+
 	
 });

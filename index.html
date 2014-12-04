@@ -20,13 +20,12 @@
   	$(document).ready( function(){
 document.getElementById('pencil').style.border="2px solid orange";  
 document.getElementById('divrubber').style.display="none";	
-  	});
-  	
-  	
+  	});  	
   </script>	
 		
     </head>    
     <body>
+	<div id="container">
 	<div id="divrubber" title="double click to delete" alt="double to delete">Double click to delete</div>	
 <div id="controlli">	
 <div style="float:left;">
@@ -37,32 +36,22 @@ document.getElementById('divrubber').style.display="none";
 <img src="assets/img/size3.png" alt="size3" id="size3" class="sizepencil" /><br />
 <img src="assets/img/size4.png" alt="size4" id="size4" class="sizepencil" /><br />
 <img src="assets/img/size5.png" alt="size5" id="size5" class="sizepencil" /><br />
+<button id="restore">restore</button>
 <br />
 </div>
 <div id="frecce">
 <div style="padding-bottom:10%;vertical-align:middle;">
-<span style="font-size:28px;font-weight:"600">&nbsp;<br />&nbsp;<br />P<br />A<br />N<br />E<br />L</span>
+<span style="font-size:26px;font-weight:600">&nbsp;<br />P<br />A<br />N<br />E<br />L</span>
 </div>
 </div>
 </div>
 		<div id="cursors">
 	    	<!-- The mouse pointers will be created here -->
-		</div>
-		
-  <img id="canvasimg" alt="" style="position:absolute;left:300px;top:10px;border:none;cursor:pointer;width:1900px;height:1000px;visibility:hidden;" /> 
-		<canvas id="respondcanvas" width="1900" height="1000">
-			Your browser needs to support canvas for this to work!
-		</canvas>
-	  <hgroup id="instructions">		
-			<h1>Draw anywhere!</h1> 
-			<h2>NGS APP</h2>			
-		</hgroup>
-		
-       <footer>
-	        </footer>
-        
-        <!-- JavaScript includes. Notice that socket.io.js is served by node.js -->
-		<script src="/socket.io/socket.io.js"></script>    
-	<script src="assets/js/script.js"></script>
+		</div>	
+<canvas id="bgcanvas" width="1900" height="1000">Your browser needs to support canvas for this to work!</canvas>	
+ <canvas id="respondcanvas" width="1900" height="1000">Your browser needs to support canvas for this to work!</canvas>
+  	</div>	
+	<script src="/socket.io/socket.io.js"></script>    
+	<script src="assets/js/script.js"></script>   
 	 </body>
 </html>         
