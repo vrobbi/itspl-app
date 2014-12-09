@@ -1,7 +1,9 @@
 var app = require('http').createServer(handler),
 	io = require('socket.io').listen(app),
 	nstatic = require('node-static'),
-	url = require('url');  // for serving files
+linecounter = 0;	
+var urlimageroom = [];
+//  url = require('url');  // for serving files
 	
 
 // This will make all the files in the current folder
@@ -15,10 +17,12 @@ var port = process.env.PORT || 8080; // Cloud9 + Heroku || localhost
 app.listen(port);
 
 // If the URL of the socket server is opened in a browser
+
+
 function handler (request, response) {
-	if ((url.parse(request.url).query) !== null){
-console.log( url.parse(request.url).query);		
-}
+//if ((url.parse(request.url).query) !== null){
+//console.log( url.parse(request.url).query);		
+//}
 
 request.addListener('end', function () {
     fileServer.serve(request, response);
@@ -49,6 +53,26 @@ socket.on('setuproom', function (data) {
 // socket.leave('public');
  socket.join(data.room);
  socket.nickname = data.usernamerem;
+// console.log(data.imageBG);
+ if (data.imageBG ===  ''){
+var occorrenza ='';
+	 var len = urlimageroom.length;
+	 console.log(len);
+	for (i=len; i!=0; i--) {
+		// var lunghezzastringa = urlimageroom[i].length;
+occorrenza = urlimageroom[i-1].lastIndexOf('_');		 
+//socket.emit('setuproomser', data);
+console.log(urlimageroom[i-1].substr(0,occorrenza));
+if (data.room ===  urlimageroom[i-1].substr(occorrenza+1)){
+socket.emit('setuproomser', {
+			'room' :  data.room,
+			'imageBG' : urlimageroom[i-1].substr(0,occorrenza)				
+			});	
+break;	
+	}
+	 }
+//});	 
+ }
      // console.log (Object.keys(io.sockets.manager.rooms));
  
 var roster = io.sockets.clients(data.room);
@@ -71,7 +95,18 @@ listautenti =	listautenti +  client.nickname + '<br />';
 	socket.on('mousemove', function (data) {
 		
 	//	if (data.room !='' || data.room !='public') {
+		
 		socket.broadcast.to(data.room).emit('moving', data);
+											
+		if(data.drawing  && data.controlpencil){
+			linecounter = linecounter +1;
+	//	console.log(linecounter);	
+			
+			
+		}
+											
+											
+											
 	    //	}  
 	});
 	
@@ -97,9 +132,16 @@ socket.on('fileperaltri', function (data) {
 	});	
 
 socket.on('loadimage', function (data) {
-		
-		// This line sends the event (broadcasts it)
+//occorrenza = urlimageroom[i].lastIndexOf('_');		 
+urlimageroom.push(data.imageBG + "_" + data.room);	
+//        console.log(urlimageroom);     
+if (urlimageroom.length > 50) { 
+urlimageroom.shift();
+}	
+
+	
 		// to everyone except the originating client.
+	//	console.log(urlimageroom[0]);
 	socket.broadcast.to(data.room).emit('loadimageser', data);
 	});	
 

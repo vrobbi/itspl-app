@@ -27,6 +27,7 @@ document.getElementById('size1').style.border="2px solid orange";
 	
 	roomid = getParameterByName('roomID');
 	if (roomid.length > 0){  roomid = getParameterByName('roomID')};	
+	imageBG = getParameterByName('imageBG');
 	
 			
 	var doc = jQuery(document),
@@ -43,7 +44,8 @@ document.getElementById('size1').style.border="2px solid orange";
 	var cursors = {};
 	canvas.width = document.body.clientWidth;
     canvas.height = document.body.clientHeight;
-	
+	bgcanvas.width = document.body.clientWidth;
+	bgcanvas.height = document.body.clientHeight;
 	//  funzione richiesta di nick name   
 	
 
@@ -64,19 +66,20 @@ var colorem;
     ctx.lineWidth =  2;
  ctx.font = "20px Tahoma";
  
- if (roomid.length > 2) {
+ if (roomid.length > 0) {
 socket.emit('setuproom',{
 				'room': roomid,				
-				'usernamerem' : username
+				'usernamerem' : username,
+				'imageBG': imageBG
 			});
 } 
 
-imageBG = getParameterByName('imageBG');
-	if (imageBG.length > 3){ 
-	imageBG = getParameterByName('imageBG');
+ if (imageBG.length > 3){ 
+	// imageBG = getParameterByName('imageBG');
 	imageobj = new Image();
 	imageobj.src = imageBG;
 	imageobj.onload = function() {
+		ctx1.clearRect(0,0,bgcanvas.width,bgcanvas.height);
          ctx1.drawImage(imageobj, positionx, positiony);
 	// loadImages(sources, function(images) {
 									};
@@ -167,9 +170,7 @@ $('#file-input').change(function(e) {
 		     
     });	
 
-jQuery('#restore').click(function (){
-ctx.restore();
-});
+
 jQuery('#salvasulserver').click(function (){
 var dataserver = canvas[0].toDataURL();
 
@@ -214,17 +215,21 @@ ctx.drawImage(imgdaclient, data.positionx, data.positiony);
 var imgdaclient = new Image();
 //alert(data.imageBG); 
 imgdaclient.src = data.imageBG;
+ctx1.clearRect(0,0,bgcanvas.width,bgcanvas.height);
 imgdaclient.onload = function() {
- ctx1.drawImage(imgdaclient, positionx, positiony);
+ctx1.drawImage(imgdaclient, positionx, positiony);
  }          
 // alert(imgdaclient.src.toDataURL());
 });
 	
- socket.on('doppioclickser', function (data) {
- ctx.fillStyle = data.color;
- ctx.font = data.fontsizerem + "px Tahoma";
-	ctx.fillText(data.scrivi, data.x, data.y); 
-          
+ socket.on('setuproomser', function (data) {
+ var imgdaclient = new Image();
+//alert(data.imageBG); 
+imgdaclient.src = data.imageBG;
+imgdaclient.onload = function() {
+	ctx1.clearRect(0,0,bgcanvas.width,bgcanvas.height);
+ ctx1.drawImage(imgdaclient, positionx, positiony);          
+}
 	});	
  
   socket.on('deletezoneser', function (data) {
@@ -307,7 +312,7 @@ ctx.clearRect(data.x, data.y, data.width, data.height);
 		
 		if(drawing && controlpencil){
 
-           ctx.save();
+        //    ctx.save();
 			drawLine(prev.x, prev.y, e.pageX, e.pageY, color);
 			prev.x = e.pageX;
 			prev.y = e.pageY;
@@ -331,7 +336,7 @@ ctx.clearRect(data.x, data.y, data.width, data.height);
             else {
 			 totalOnline++;			
         }}
-        jQuery('#onlineCounter').html('Users connected: '+totalOnline);
+  //      jQuery('#onlineCounter').html('Users connected: '+totalOnline);
     },16000);
 //// end setinterval function ****************************
 	function drawLine(fromx, fromy, tox, toy, color){
