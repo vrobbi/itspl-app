@@ -18,7 +18,9 @@ document.getElementById('size1').style.border="2px solid orange";
 	var pencilsize = 1;
 	var positionx ='23';
 	var positiony='0';
-    var url = window.location.hostname;
+	var string64data = '';
+	var clickcounter = 0;
+        var url = window.location.hostname;
 	color = getParameterByName('color');
 	if (color.length == 6){  color = '#' + color};
 	
@@ -51,19 +53,16 @@ document.getElementById('size1').style.border="2px solid orange";
 
 //  username = username.substr(0,30);	
 var socket = io.connect(url); 
-// var ctx1 = canvas1.getContext('2d');
 
 
 var spessore = jQuery('#spessore').value;
 var colorem;
-    // Force canvas to dynamically change its size to the same width/height
-    // as the browser window.
-    
+       
 
     // ctx setup
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.lineWidth =  2;
+ //   ctx.lineWidth =  2;
  ctx.font = "20px Tahoma";
  
  if (roomid.length > 0) {
@@ -171,22 +170,13 @@ $('#file-input').change(function(e) {
     });	
 
 
-jQuery('#salvasulserver').click(function (){
-var dataserver = canvas[0].toDataURL();
-
-socket.emit('salvasulserver',{
-				'id': id,
-				'dataserver': dataserver,
-				'orario':  jQuery.now()
-			});										  
-});
-
  jQuery('#divrubber').dblclick(function (){
 var divrubber = jQuery("#divrubber");
 			var posizionerubber = divrubber.position();
 			var rubberwidth =   document.getElementById('divrubber').style.width;
 			var rubberheight = document.getElementById('divrubber').style.height;
 ctx.clearRect(posizionerubber.left, posizionerubber.top, rubberwidth.substr(0,rubberwidth.length -2), rubberheight.substr(0,rubberheight.length -2));	
+
 socket.emit('deletezone',{
 				'x': posizionerubber.left,
 				'y': posizionerubber.top,
@@ -196,8 +186,9 @@ socket.emit('deletezone',{
 				'spessremo' : pencilsize,
 				'room' : roomid				
 			});
+canvas2base64();
 });
- 
+
  
 /* 
  socket.on('fileperaltriser', function (data) {
@@ -225,10 +216,21 @@ ctx1.drawImage(imgdaclient, positionx, positiony);
  socket.on('setuproomser', function (data) {
  var imgdaclient = new Image();
 //alert(data.imageBG); 
-imgdaclient.src = data.imageBG;
+imgdaclient.src = data.imageBG;     //  url of the image
 imgdaclient.onload = function() {
 	ctx1.clearRect(0,0,bgcanvas.width,bgcanvas.height);
  ctx1.drawImage(imgdaclient, positionx, positiony);          
+}
+	});	
+ 
+  socket.on('setupcanvasser', function (data) {
+ var imgdaclient = new Image();
+//alert(data.imageBG); 
+imgdaclient.src = data.canvasstring; 
+//alert (data.canvasstring);//  url of the image
+imgdaclient.onload = function() {
+	ctx.clearRect(0,0,canvas.width,canvas.height);
+ ctx.drawImage(imgdaclient,0,0);          
 }
 	});	
  
@@ -250,11 +252,7 @@ ctx.clearRect(data.x, data.y, data.width, data.height);
 		// Is the user drawing?
 		if(data.drawing && data.controlpencil && clients[data.id]){
 			
-			// Draw a line on the canvas. clients[data.id] holds
-			// the previous position of this user's mouse pointer
-
-         //   ctx.strokeStyle = data.colorem;
-			drawLinerem(clients[data.id].x, clients[data.id].y, data.x, data.y,data.spessremo,data.colorem);
+		 drawLinerem(clients[data.id].x, clients[data.id].y, data.x, data.y,data.spessremo,data.colorem);
 		}
 		
 		// Saving the current client state
@@ -264,15 +262,7 @@ ctx.clearRect(data.x, data.y, data.width, data.height);
 
 	var prev = {};
 
-    // To manage touch events
-    // http://ross.posterous.com/2008/08/19/iphone-touch-events-in-javascript/
-
-  //  document.addEventListener("touchstart", touchHandler, true);
-  
-// document.addEventListener("blur", cambiacolore(), true);
-		  
-      
-	canvas.on('mousedown', function(e){
+  	canvas.on('mousedown', function(e){
 		e.preventDefault();
 		drawing = true;
 		prev.x = e.pageX;
@@ -283,18 +273,20 @@ ctx.clearRect(data.x, data.y, data.width, data.height);
 	});
 	
 	doc.bind('mouseup mouseleave', function(){
- 
-		drawing = false;
+ 		drawing = false;
+		 
 	});
+	
+	 doc.on('mouseup', function() { 
+drawing = false;
+canvas2base64();
+});
 
 	var lastEmit = jQuery.now();
 
 	doc.on('mousemove', function(e){
 								 
 		if(jQuery.now() - lastEmit > 25){
-			
-//	document.getElementById('risultato').innerHTML = $('#minicolore').minicolors('rgbaString');
-			
 			socket.emit('mousemove',{
 				'x': e.pageX,
 				'y': e.pageY,
@@ -311,9 +303,7 @@ ctx.clearRect(data.x, data.y, data.width, data.height);
 		// not received in the socket.on('moving') event above
 		
 		if(drawing && controlpencil){
-
-        //    ctx.save();
-			drawLine(prev.x, prev.y, e.pageX, e.pageY, color);
+     	drawLine(prev.x, prev.y, e.pageX, e.pageY, color);
 			prev.x = e.pageX;
 			prev.y = e.pageY;
 			
@@ -356,12 +346,10 @@ ctx.clearRect(data.x, data.y, data.width, data.height);
 		ctx.lineTo(tox, toy);
 		ctx.stroke();
 	}
-
+/*
 function fileOnload(e) {
         var img = $('<img>', { src: e.target.result });
-		// alert(img.src.value);
-   //     var canvas1 = $('#paper')[0];
-      //     var context1 = canvas1.getContext('2d');
+	
         img.load(function() {
             ctx.drawImage(this, positionx, positiony);
 			socket.emit('fileperaltri',{
@@ -373,12 +361,24 @@ function fileOnload(e) {
 				});	
         });
     }
-	
+ */	
 	function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
         results = regex.exec(location.search);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function canvas2base64()  {
+	var string_canvas = canvas[0].toDataURL();
+	if (string64data.length !=  string_canvas.length) {
+string64data = string_canvas;	
+socket.emit('base64data',{
+				'base64data' : roomid + '_' + string64data,
+				'room' : roomid
+				});
+console.log ('Byte sent to server: ' + string_canvas.length);
+	}	
 }
 
 
