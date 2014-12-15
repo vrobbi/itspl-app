@@ -19,8 +19,7 @@ document.getElementById('size1').style.border="2px solid orange";
 	var positionx ='23';
 	var positiony='0';
 	var string64data = '';
-	var clickcounter = 0;
-        var url = window.location.hostname;
+	  var url = window.location.hostname;
 	color = getParameterByName('color');
 	if (color.length == 6){  color = '#' + color};
 	
@@ -34,9 +33,8 @@ document.getElementById('size1').style.border="2px solid orange";
 			
 	var doc = jQuery(document),
 		canvas = jQuery('#respondcanvas'),
-		bgcanvas = jQuery('#bgcanvas'),
-	instructions = jQuery('#instructions');
-	// A flag for drawing activity
+		bgcanvas = jQuery('#bgcanvas');
+//	instructions = jQuery('#instructions');
 	var ctx = canvas[0].getContext('2d');	
 	var ctx1 = bgcanvas[0].getContext('2d');	
 	var drawing = false;
@@ -48,18 +46,12 @@ document.getElementById('size1').style.border="2px solid orange";
     canvas.height = document.body.clientHeight;
 	bgcanvas.width = document.body.clientWidth;
 	bgcanvas.height = document.body.clientHeight;
-	//  funzione richiesta di nick name   
 	
-
-//  username = username.substr(0,30);	
 var socket = io.connect(url); 
 
-
-var spessore = jQuery('#spessore').value;
+// var spessore = jQuery('#spessore').value;
 var colorem;
-       
-
-    // ctx setup
+ 
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
  //   ctx.lineWidth =  2;
@@ -74,7 +66,6 @@ socket.emit('setuproom',{
 } 
 
  if (imageBG.length > 3){ 
-	// imageBG = getParameterByName('imageBG');
 	imageobj = new Image();
 	imageobj.src = imageBG;
 	imageobj.onload = function() {
@@ -91,9 +82,6 @@ socket.emit('setuproom',{
 			});
 	
 	};	
-
-	// Generate an unique ID
-//url.substring(url.indexOf('#')+1);
 
   
  $('#rubber').click(function(e) {
@@ -157,19 +145,6 @@ pencilsize = 25;
     });
  
 
-$('#file-input').change(function(e) {
-        var file = e.target.files[0],
-            imageType = /image.*/;
-    if (!file.type.match(imageType))
-            return;
-
-        var reader = new FileReader();
-        reader.onload = fileOnload;
-    reader.readAsDataURL(file);  
-		     
-    });	
-
-
  jQuery('#divrubber').dblclick(function (){
 var divrubber = jQuery("#divrubber");
 			var posizionerubber = divrubber.position();
@@ -190,18 +165,6 @@ canvas2base64();
 });
 
  
-/* 
- socket.on('fileperaltriser', function (data) {
- 
-var imgdaclient = new Image();
-imgdaclient.src = data.fileperaltri;
-imgdaclient.onload = function() {
-//	imgdaclient.src = data.fileperaltri;
-ctx.drawImage(imgdaclient, data.positionx, data.positiony);
-}
-});	
- */
- 
   socket.on('loadimageser', function (data) {
 var imgdaclient = new Image();
 //alert(data.imageBG); 
@@ -210,7 +173,6 @@ ctx1.clearRect(0,0,bgcanvas.width,bgcanvas.height);
 imgdaclient.onload = function() {
 ctx1.drawImage(imgdaclient, positionx, positiony);
  }          
-// alert(imgdaclient.src.toDataURL());
 });
 	
  socket.on('setuproomser', function (data) {
@@ -225,9 +187,7 @@ imgdaclient.onload = function() {
  
   socket.on('setupcanvasser', function (data) {
  var imgdaclient = new Image();
-//alert(data.imageBG); 
 imgdaclient.src = data.canvasstring; 
-//alert (data.canvasstring);//  url of the image
 imgdaclient.onload = function() {
 	ctx.clearRect(0,0,canvas.width,canvas.height);
  ctx.drawImage(imgdaclient,0,0);          
@@ -267,17 +227,15 @@ ctx.clearRect(data.x, data.y, data.width, data.height);
 		drawing = true;
 		prev.x = e.pageX;
 		prev.y = e.pageY;
-		
-		// Hide the instructions
-		instructions.fadeOut();
-	});
 	
-	doc.bind('mouseup mouseleave', function(){
+	});
+/*	
+	$('#respondcanvas').on('mouseup mouseleave', function(){
  		drawing = false;
 		 
 	});
-	
-	 doc.on('mouseup', function() { 
+*/	
+	$('#respondcanvas').on('mouseup', function() { 
 drawing = false;
 canvas2base64();
 });
@@ -328,7 +286,7 @@ canvas2base64();
         }}
   //      jQuery('#onlineCounter').html('Users connected: '+totalOnline);
     },16000);
-//// end setinterval function ****************************
+
 	function drawLine(fromx, fromy, tox, toy, color){
 		ctx.strokeStyle = color;
 	   ctx.lineWidth = pencilsize;	
@@ -346,22 +304,6 @@ canvas2base64();
 		ctx.lineTo(tox, toy);
 		ctx.stroke();
 	}
-/*
-function fileOnload(e) {
-        var img = $('<img>', { src: e.target.result });
-	
-        img.load(function() {
-            ctx.drawImage(this, positionx, positiony);
-			socket.emit('fileperaltri',{
-				'id': id,
-				'positionx': positionx,
-				'positiony': positiony,
-				'fileperaltri':  this.src,
-				'room': stanza
-				});	
-        });
-    }
- */	
 	function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -374,14 +316,11 @@ function canvas2base64()  {
 	if (string64data.length !=  string_canvas.length) {
 string64data = string_canvas;	
 socket.emit('base64data',{
-				'base64data' : roomid + '_' + string64data,
-				'room' : roomid
-				});
+				'base64data' : roomid + '_' + string64data
+				   });
 console.log ('Byte sent to server: ' + string_canvas.length);
 	}	
 }
-
-
 
 });
 
