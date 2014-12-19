@@ -4,6 +4,8 @@ jQuery(function(){
 		alert('Sorry, it looks like your browser does not support canvas!');
 		return false;
 	}     	
+	document.getElementById('pencil').style.border="2px solid orange";  
+document.getElementById('divrubber').style.display="none";	
 jQuery("#divrubber").draggable({ cursor: "move" }).resizable();		
 document.getElementById('divrubber').style.width="70px";
 document.getElementById('divrubber').style.height="70px";
@@ -11,6 +13,7 @@ document.getElementById('size1').style.border="2px solid orange";
 // document.getElementByClassName("sizepencil").style.border =""; 
 	// The URL of your web server (the port is set in app.js)
 	//var url = 'http://localhost:3000'
+	var divrubber = jQuery("#divrubber");
 	var imageBG ='';
 	var color ='';
 	var username = '';
@@ -144,9 +147,10 @@ document.getElementById('size1').style.border="";
 pencilsize = 25;
     });
  
+$('#divrubber').on('mousemove', function(e){								 
 
- jQuery('#divrubber').dblclick(function (){
-var divrubber = jQuery("#divrubber");
+// jQuery('#divrubber').dblclick(function (){
+if(document.getElementById('checkerase').checked) {
 			var posizionerubber = divrubber.position();
 			var rubberwidth =   document.getElementById('divrubber').style.width;
 			var rubberheight = document.getElementById('divrubber').style.height;
@@ -161,10 +165,14 @@ socket.emit('deletezone',{
 				'spessremo' : pencilsize,
 				'room' : roomid				
 			});
-canvas2base64();
+}
+// canvas2base64();
 });
 
- 
+$('#divrubber').on('mouseup', function(e){
+canvas2base64();
+ });
+
   socket.on('loadimageser', function (data) {
 var imgdaclient = new Image();
 //alert(data.imageBG); 
@@ -201,7 +209,7 @@ ctx.clearRect(data.x, data.y, data.width, data.height);
 	socket.on('moving', function (data) {
 		if(!(data.id in clients)){
 			// a new user has come online. create a cursor for them
-			cursors[data.id] = jQuery('<div class="cursor"><div class="identif">'+ data.usernamerem +'</div>').appendTo('#cursors');
+   cursors[data.id] = jQuery('<div class="cursor"><div class="identif">'+ data.usernamerem +'</div>').appendTo('#cursors');
 		}
 	// Move the mouse pointer
 		cursors[data.id].css({
@@ -242,7 +250,9 @@ canvas2base64();
 
 	var lastEmit = jQuery.now();
 
-	doc.on('mousemove', function(e){
+//	doc.on('mousemove', function(e){
+								 
+$('#respondcanvas').on('mousemove', function(e){								 
 								 
 		if(jQuery.now() - lastEmit > 25){
 			socket.emit('mousemove',{
