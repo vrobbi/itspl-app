@@ -5,7 +5,6 @@ jQuery(function(){
 		return false;
 	}     	
 	document.getElementById('pencil').style.border="2px solid orange";  
-document.getElementById('divrubber').style.display="none";	
 jQuery("#divrubber").draggable({ cursor: "move" }).resizable();		
 document.getElementById('divrubber').style.width="70px";
 document.getElementById('divrubber').style.height="70px";
@@ -170,6 +169,7 @@ socket.emit('deletezone',{
 });
 
 $('#divrubber').on('mouseup', function(e){
+console.log ('mouseup rubber');									   
 canvas2base64();
  });
 
@@ -237,12 +237,7 @@ ctx.clearRect(data.x, data.y, data.width, data.height);
 		prev.y = e.pageY;
 	
 	});
-/*	
-	$('#respondcanvas').on('mouseup mouseleave', function(){
- 		drawing = false;
-		 
-	});
-*/	
+
 	$('#respondcanvas').on('mouseup', function() { 
 drawing = false;
 canvas2base64();

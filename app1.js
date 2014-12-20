@@ -1,10 +1,9 @@
 var app = require('http').createServer(handler),
 	io = require('socket.io').listen(app),
 	nstatic = require('node-static'),
-linecounter = 0;	
-var urlimageroom =[];
+urlimageroom =[];
 var   data64 =[];
-var len1 ='';
+var len1 =0;
 // This will make all the files in the current folder
 // accessible from the web
 var fileServer = new nstatic.Server('./');
@@ -37,6 +36,7 @@ socket.on('setuproom', function (data) {
  	if (myregexp.test(data.room)=== true)   {
  socket.join(data.room);
  socket.nickname = data.usernamerem;
+ console.log('new connection roomid: '+ data.room);
  if (data.imageBG ===  ''){
 var occorrenza ='';
 	 var len = urlimageroom.length;
@@ -65,15 +65,9 @@ socket.emit('setupcanvasser', {
 			});		
 break;
  }
-//socket.emit('setuproomser', data);
-//console.log(urlimageroom[i-1].substr(0,occorrenza));
 }
-
-	//  }); 
- 
-
-	}
-	}); 
+}
+}); 
 
 
 socket.on('base64data', function (data) { 
@@ -81,58 +75,37 @@ var occorrenza64 ='';
 var insertion =false;
 var occorrenza64 = data.base64data.indexOf('_');	
 var extractroom =  data.base64data.substr(0,occorrenza64);
-console.log(extractroom);
 len1 = data64.length;
 	// console.log(len);
 	// console.log(data.base64data.length);
 	
 	
 for (i=0; i<len1; i++) {
-		// var lunghezzastringa = urlimageroom[i].length;
 occorrenza64  = data64[i].indexOf('_'); 
 if (data64[i].substr(0,occorrenza64) === extractroom ) {
 data64[i] =  data.base64data;	
 insertion = true;
+console.log('update arraycanvas ' + data64.length);
 break;
  }
-//socket.emit('setuproomser', data);
-//console.log(urlimageroom[i-1].substr(0,occorrenza));
+
 }
 if (insertion == false) {
 data64.push(data.base64data);
-console.log	(data64.length + ' nuovo inserimento') ;
+console.log	(data64.length + ' new insert') ;
 }
-	 
-console.log	(data64.length + ' lunghezza arrai completo') ;
-	}); 
-
- 
+}); 
 
 	// Start listening for mouse move events
 	socket.on('mousemove', function (data) {
 		
 	socket.broadcast.to(data.room).emit('moving', data);
-											
-		if(data.drawing  && data.controlpencil){
-			linecounter = linecounter +1;
-				
-		}
-		
+						
 	});
 	
 		socket.on('deletezone', function (data) {
 	socket.broadcast.to(data.room).emit('deletezoneser', data);
  });
-	
-
-
-
-socket.on('fileperaltri', function (data) {
-		
-		// This line sends the event (broadcasts it)
-		// to everyone except the originating client.
-	socket.broadcast.to(data.room).emit('fileperaltriser', data);
-	});	
 
 socket.on('loadimage', function (data) {
 //occorrenza = urlimageroom[i].lastIndexOf('_');		 
@@ -142,9 +115,6 @@ if (urlimageroom.length > 50) {
 urlimageroom.shift();
 }	
 
-	
-		// to everyone except the originating client.
-	//	console.log(urlimageroom[0]);
 	socket.broadcast.to(data.room).emit('loadimageser', data);
 	});	
 
