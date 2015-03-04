@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <head>
 <meta charset="utf-8"/>
-<meta name="keywords" content="lavagna collaborativa, disegnare on line, applicazione real time, multiuser whiteboard, realtime application, drawing on line, drawing game, html5, web 2.0, software, internet, image capture, webcam" />
-<meta name="description" content="lavagna multiutente condivisa in tempo reale,multiuser whiteboard real time application, draw on line and share your draw with all on the net" />
+<meta name="keywords" content="Web app,  parsing string" />
+<meta name="description" content="parsing string app" />
 
         <meta charset="utf-8" />
-        <title>Real time whiteboard collaborative multicolor multiusers with upload images</title>
+        <title>Parsing string app</title>
 
         <!-- The stylesheets -->
         <link rel="stylesheet" href="assets/css/styles.css" />
 		<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-	 	<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script> 
-		<link rel="stylesheet" type="text/css" href="assets/css/jquery-ui-css.css" />
+	 	<link rel="stylesheet" type="text/css" href="assets/css/jquery-ui-css.css" />
 		 
 			        <!--[if lt IE 9]>
           <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -26,28 +25,13 @@
     </head>    
     <body>
 	<div id="container">
-	<div id="divrubber" title="drag this square to erase" alt="drag this square to erase" style="display:none;"><input id="checkerase" type="checkbox" value="false" />Moving to erase</div>	
+		
 <div id="controlli">	
-<div style="float:left;">
-<img src="assets/img/rubber.png" alt="Rubber" id="rubber" />
-<img src="assets/img/pencil.png" alt="Pencil" id="pencil" /><br />
-<img src="assets/img/size1.png" alt="size1" id="size1" class="sizepencil" /><br />
-<img src="assets/img/size2.png" alt="size2" id="size2" class="sizepencil" /><br />
-<img src="assets/img/size3.png" alt="size3" id="size3" class="sizepencil" /><br />
-<img src="assets/img/size4.png" alt="size4" id="size4" class="sizepencil" /><br />
-<img src="assets/img/size5.png" alt="size5" id="size5" class="sizepencil" /><br />
+<input type="text" id="scrivi" size="36" /> <br />
+Enter a string to be parsed above and click enter,<br/>
+use the same roomID in the URL (must be a number).
+<div id="testichat"></div>
 </div>
-<div id="frecce">
-<div style="padding-bottom:10%;vertical-align:middle;">
-<span style="font-size:26px;font-weight:600">&nbsp;<br />P<br />A<br />N<br />E<br />L</span>
-</div>
-</div>
-</div>
-		<div id="cursors">
-	    	<!-- The mouse pointers will be created here -->
-		</div>	
-<canvas id="bgcanvas" width="1400" height="900">Your browser needs to support canvas for this to work!</canvas>	
- <canvas id="respondcanvas" width="1400" height="900">Your browser needs to support canvas for this to work!</canvas>
   	</div>	
 	<script src="./socket.io/socket.io.js"></script>    
 	<script src="assets/js/script.js"></script>   
