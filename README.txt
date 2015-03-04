@@ -1,6 +1,6 @@
-NODEJS Drawing Game
+jamppi  app parser
 
-* Original work: http://tutorialzine.com/2012/08/nodejs-drawing-game/
+* Original work: http://vrobbi-nodedrawing.herokuapp.com/
 * Demo on Heroku: http://vrobbi-nodedrawing.herokuapp.com/
 
 

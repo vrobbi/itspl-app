@@ -1,5 +1,5 @@
 {
-  "name": "ngs-app",
+  "name": "jamppi-app",
   "version": "0.0.1",
   "dependencies":
   {
@@ -8,7 +8,7 @@
  },
   "engines": {
     "node": "0.10.26",
-    "npm": "1.2.x"
+    "npm": "2.2.x"
   }
 }
 
