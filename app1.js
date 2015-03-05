@@ -49,10 +49,14 @@ fields.length = 0;
 fields =  stringremote.split("/");
 
 for (i=0;i<fields.length;i++) {
-fetchedstring =  fetchedstring + '   ' + 	fields[i];
-	
+	if(i===0) {fetchedstring = fetchedstring + 'Status = ' +  	fields[i] + '<br />';}
+	if(i===1) {fetchedstring = fetchedstring + 'Hours = ' +  	fields[i]+ '<br />';}
+	if(i===2) {fetchedstring = fetchedstring + 'Customer = ' +  fields[i]+ '<br />';}
+	if(i===3) {fetchedstring = fetchedstring + 'Event = ' +  	fields[i]+ '<br />';}
+	if(i===4) {fetchedstring = fetchedstring + 'Data = ' +  	fields[i]+ '<br />';}
+	if (i>4)  {fetchedstring = fetchedstring + 'Unknown field = ' +  	fields[i]+ '<br />';}
 	};
-fetchedstring =  'Fields parsed from server: ' + fields.length + ' = ' + fetchedstring;		
+fetchedstring =  '<span style="color:green">Fields parsed from server: ' + fields.length + '</span><br />' + fetchedstring;		
 
 		socket.broadcast.to(data.room).emit('chatser',
 		{									
@@ -67,17 +71,6 @@ fetchedstring =  'Fields parsed from server: ' + fields.length + ' = ' + fetched
 			'id': data.id
 			});	
 		
-	});	
-
-socket.on('loadimage', function (data) {
-//occorrenza = urlimageroom[i].lastIndexOf('_');		 
-urlimageroom.push(data.imageBG + "_" + data.room);	
-//        console.log(urlimageroom);     
-if (urlimageroom.length > 50) { 
-urlimageroom.shift();
-}	
-
-	socket.broadcast.to(data.room).emit('loadimageser', data);
 	});	
 
 	
