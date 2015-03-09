@@ -6,7 +6,8 @@ fetchedstring ='';
 var chatServer = net.createServer(),
     clientList = [];
 	var receivedstring;
-
+var port = process.env.PORT || 81; // Cloud9 + Heroku || localhost
+// app.listen(port);
 chatServer.on('connection', function(client) {
   client.name = client.remoteAddress + ':' + client.remotePort
   client.write('Connected to the node.js server\n\r');
@@ -128,4 +129,4 @@ function broadcast(message, client) {
   }
 }
 
-chatServer.listen(81)
+chatServer.listen(port)
