@@ -18,8 +18,8 @@ stanza  = location.href.substring(location.href.indexOf('#')+1);
 	var positionx ='23';
 	var positiony='0';
 	var positionleft;
-		var positiontop;
-
+	var positiontop;
+	
 	var doc = jQuery(document),
 		canvas = jQuery('#area2draw'),
     //canvas1 = jQuery('#paper1'),
@@ -143,18 +143,7 @@ $('#file-input').change(function(e) {
 filenoimage ='';	
 	});	
 
-/*
-jQuery('#salvasulserver').click(function (){
-var dataserver = canvas[0].toDataURL();
 
-socket.emit('salvasulserver',{
-				'id': id,
-				'dataserver': dataserver,
-				'orario':  jQuery.now()
-			});										  
-});
-
-*/
 
 jQuery('#vedomonitor').click(function (){
 if(document.getElementById('monitorcam').style.display == 'none')   { 
@@ -196,10 +185,6 @@ window.open(document.getElementById("canvasimg").src, "toDataURL() image", "widt
 										  
 });
 
- jQuery('#cancellalavagna').click(function (){
-ctx.clearRect(0, 0, canvas[0].width, canvas[0].height);													  
-});
- 
 
   
   jQuery('#suonacamp').click(function (){
@@ -274,7 +259,7 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
 		});
 			
 		// Is the user drawing?
-		if(data.drawing && clients[data.id]){
+		if(data.drawing && data.controlpencil && clients[data.id]){
 			
 			// Draw a line on the canvas. clients[data.id] holds
 			// the previous position of this user's mouse pointer
@@ -283,6 +268,10 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
 			drawLinerem(clients[data.id].x, clients[data.id].y, data.x, data.y,data.spessremo,data.color);
 		}
 		
+		if (data.controlrubber && data.drawing) {		
+		ctx.clearRect(data.x-data.width-6, data.y, data.width, data.height); 			 
+		 }
+		
 		// Saving the current client state
 		clients[data.id] = data;
 		clients[data.id].updated = jQuery.now();
@@ -290,13 +279,7 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
 
 	var prev = {};
 
-    // To manage touch events
-    // http://ross.posterous.com/2008/08/19/iphone-touch-events-in-javascript/
-
-  //  document.addEventListener("touchstart", touchHandler, true);
-  
-// document.addEventListener("blur", cambiacolore(), true);
-		  
+  		  
    document.addEventListener("change", cambiaspessore, true);
   function cambiaspessore () {
 	   ctx.lineWidth = document.getElementById('spessore').value;	   
@@ -334,6 +317,10 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
                 'color': $('#minicolore').minicolors('rgbaString'),
 				'id': id,
 				'usernamerem' : username,
+				'controlrubber': controlrubber,
+				'controlpencil': controlpencil,
+				'width': rubbersize,
+				'height': rubbersize,
 				'spessremo' : pencilsize,
 				'room' : stanza
 			});
@@ -342,7 +329,17 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
 		// Draw a line for the current user's movement, as it is
 		// not received in the socket.on('moving') event above
 		
-		if(drawing){
+		if (controlrubber){
+	jQuery("#divrubber").css( "zIndex", 11);
+	document.getElementById('divrubber').style.left = (positionleft - rubbersize-6) +'px';
+document.getElementById('divrubber').style.top = positiontop +'px';
+			  if (drawing) {
+	  jQuery("#divrubber").css( "zIndex", 13);
+ctx.clearRect(positionleft - rubbersize-6, positiontop, rubbersize, rubbersize);
+		}
+			 } 
+		
+		if(drawing  && (!controlrubber)){
        //     ctx.strokeStyle = document.getElementById('minicolore').value;
 	//  ctx.strokeStyle = "#ff0000";
 			drawLine(prev.x, prev.y, positionleft, positiontop);
@@ -367,7 +364,7 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
             else {
 			 totalOnline++;			
         }}
-        jQuery('#onlineCounter').html('Users connected: '+totalOnline);
+  //      jQuery('#onlineCounter').html('Users connected: '+totalOnline);
     },16000);
 /*	
 canvas.addEventListener("dragover", function (evt) {
@@ -395,8 +392,7 @@ evt.preventDefault();
 	function drawLine(fromx, fromy, tox, toy){
 	ctx.strokeStyle = $('#minicolore').minicolors('rgbaString');
        ctx.lineWidth = pencilsize;	
-	   console.log(pencilsize);
-        ctx.beginPath();
+	   ctx.beginPath();
 		ctx.moveTo(fromx, fromy);
 		ctx.lineTo(tox, toy);
 		ctx.stroke();

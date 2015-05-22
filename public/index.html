@@ -12,6 +12,7 @@
 <script src="js/jquery.minicolors.js"></script>
 <script>
 var pencilsize = 3;
+var rubbersize   = 30;
 var drawing = false;
 var controlpencil = true;
 var controlrubber = false;
@@ -42,6 +43,8 @@ $("#close4").hide("slow");
 $("#close5").hide("slow");
 $("#close6").hide("slow");
 $("#close7").hide("slow");
+
+
 });
 $("#open3").click(function () {
 $("#close3").slideToggle("slow");
@@ -138,12 +141,12 @@ document.getElementById('imagesel').style.border="";
    <li id="open3"><img src="images/eraser.png" width="20" id ="imageraser">
    <div class="pointer" id="close3">
       <ul id="eraser">
-       <li value="1">1.</li>
-       <li value="2">2.</li>
-       <li value="3">3.</li>
-       <li value="6">6.</li>
-       <li value="7">7.</li>
-       <li value="8">8.</li>
+       <li value="10">1.</li>
+       <li value="20">2.</li>
+       <li value="30">3.</li>
+       <li value="60">6.</li>
+       <li value="70">7.</li>
+       <li value="80">8.</li>
       </ul>
      </div></li>
    <li><img src="images/select.png" width="20" id="imagesel"></li>
@@ -203,17 +206,26 @@ document.getElementById('imagesel').style.border="";
  <div id="cursors">
 	    	<!-- The mouse pointers will be created here -->
 		</div>
+<div id="divrubber" title="erasing area" alt="erasing area"> </div>		
  </div>
  <!-- End Right Body -->
  </div>
  <script type="text/javascript">
  $("#pencil li").click(function() {
+ document.getElementById('divrubber').style.display="none";
     pencilsize = $(this).attr('value');
     console.log(pencilsize);
+	controlpencil = true;
+	controlrubber = false;
 	});
 	$("#eraser li").click(function() {
-    var eraser = $(this).attr('value');
-    console.log(eraser);
+     rubbersize = $(this).attr('value');
+    console.log(rubbersize);
+	controlpencil = false;
+	controlrubber = true;
+document.getElementById('divrubber').style.width= rubbersize + "px";
+document.getElementById('divrubber').style.height= rubbersize + "px";
+document.getElementById('divrubber').style.display="block";
 	});
 	$("#fonttype li").click(function() {
     var selfontype = $(this).text();

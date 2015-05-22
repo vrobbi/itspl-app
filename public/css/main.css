@@ -186,3 +186,18 @@ margin-top:15px;
 border:1px green solid;
 font-size:12px;
 }
+
+#divrubber {
+position:absolute;
+z-index:12;
+top:0px;
+left:260px;
+padding:0px;
+margin:0px;
+border:2px red dotted;
+display:none;
+-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+border-radius: 5px;
+background-color:transparent;
+}
