@@ -1,32 +1,30 @@
+
 var app = require('http').createServer(handler),
 	io = require('socket.io').listen(app),
-	nstatic = require('node-static'),
-	url = require('url');  // for serving files
-	
+	nstatic = require('node-static'); // for serving files
 
 // This will make all the files in the current folder
 // accessible from the web
-var fileServer = new nstatic.Server('./');
-
+var fileServer = new nstatic.Server('./public');
 	
 // This is the port for our web server.
 // you will need to go to http://localhost:3000 to see it
 var port = process.env.PORT || 8080; // Cloud9 + Heroku || localhost
 app.listen(port);
 
+var stringafile ='';
+var stringaip ='';
+var stanza ='';
+
 // If the URL of the socket server is opened in a browser
 function handler (request, response) {
-	if ((url.parse(request.url).query) !== null){
-console.log( url.parse(request.url).query);		
-}
-
-request.addListener('end', function () {
-    fileServer.serve(request, response);
+	request.addListener('end', function () {
+        fileServer.serve(request, response);
     }).resume();
 }
 
 // Delete this row if you want to see debug messages
-//io.set('log level', 1);
+io.set('log level', 1);
 
 // Heroku doesn't support websockets so...
 // Detect if heroku via config vars
@@ -44,21 +42,77 @@ if (process.env.HEROKU === 'true') {
 io.sockets.on('connection', function (socket) {
 socket.join('public');   
 
-socket.on('setuproom', function (data) { 
+
+socket.on('disconnect', function () {
+								  
+console.log('disconnesso');								  /*
+var roster = io.sockets.clients(data.room);
+var listautenti = '';
+roster.forEach(function(client) {
+listautenti =	listautenti +  client.nickname + '<br />';
+}); 
+listautenti = 'A USER HAS DISCONNECTED - LIST USERS IN THIS ROOM: ' +  listautenti;
+
+socket.broadcast.to(data.room).emit('listautentiser', {
+							'listautenti' : listautenti		
+									});
+*/
+  });
+
+
+socket.on('suonacamp', function (data) {
+socket.broadcast.to(data.room).emit('suonacampser', data);
+});
+
+ socket.on('setuproom', function (data) { 
  var myregexp = /^[a-zA-Z0-9]+$/;
- 	if (myregexp.test(data.room)=== true)   {
+ console.log(data.room); 
+	if (myregexp.test(data.room)=== true)   {
 socket.leave('public');
  socket.join(data.room);
  socket.nickname = data.usernamerem;
-     // console.log (Object.keys(io.sockets.manager.rooms));
+ // console.log(io.sockets.manager.rooms);
+  console.log (Object.keys(io.sockets.manager.rooms));
  
 var roster = io.sockets.clients(data.room);
 var listautenti = '';
 roster.forEach(function(client) {
 listautenti =	listautenti +  client.nickname + '<br />';
 }); 
-
+listautenti = 'LIST USERS IN THIS ROOM: ' +  listautenti;
  
+ 
+socket.emit('setuproomser', {
+			'room' :  data.room,
+				'inforoom' : 'YOUR ROOM NAME IS VALID,<br />NOW YOUR PRIVATE ROOM IS ' + data.room + '<br />',
+				'listautenti' : listautenti
+			});
+socket.broadcast.to(data.room).emit('suonacampser', data);
+socket.broadcast.to(data.room).emit('listautentiser', {
+							'listautenti' : listautenti		
+									});
+
+}  else {
+//		socket.join('public');	
+socket.nickname = data.usernamerem;		
+ console.log('ERRORE STANZA');
+// console.log (Object.keys(io.sockets.manager.rooms));
+	socket.emit('setuproomserKO', {
+				'room' : 'public',
+				'inforoom' : 'YOUR ROOM NAME IS NOT VALID,   REMEMBER TO USE AT LEAST THREE CHARACTERS OF TYPE ONLY LETTERS AND/OR NUMBERS, NOTHING ELSE.  NOW YOUR ROOM IS PUBLIC'
+			}); 
+ var roster = io.sockets.clients('public');
+var listautenti = '';
+roster.forEach(function(client) {
+listautenti =	listautenti +  client.nickname + '<br />';
+}); 
+console.log (listautenti);
+listautenti = 'LIST USERS IN THIS ROOM: ' +  listautenti;	
+socket.broadcast.to(data.room).emit('listautentiser', {
+							'listautenti' : listautenti		
+									});
+}
+	});
 
 	// Start listening for mouse move events
 	socket.on('mousemove', function (data) {
@@ -68,6 +122,23 @@ listautenti =	listautenti +  client.nickname + '<br />';
 	    //	}  
 	});
 	
+socket.on('salvasulserver', function (data) {
+		
+	//	var object = { foo: data.dataserver };
+	var datidalclient = data.dataserver.replace(/^data:image\/\w+;base64,/, "");
+var buf = new Buffer(datidalclient, 'base64');
+//var string = 'scrivo qualche cosa';
+var req = client.put(data.orario + '.png', {
+    'Content-Length': buf.length,
+	'Content-Type': 'image/png'
+});
+req.on('response', function(res){
+  if (200 == res.statusCode) {
+//    console.log('saved to %s', req.url);    
+  }
+});
+req.end(buf);		
+});	
 
 socket.on('doppioclick', function (data) {
 		
@@ -77,7 +148,12 @@ socket.on('doppioclick', function (data) {
 				      
 	});	
 
-
+socket.on('chat', function (data) {
+		
+		// This line sends the event (broadcasts it)
+		// to everyone except the originating client.
+		socket.broadcast.to(data.room).emit('chatser', data);
+	});	
 socket.on('fileperaltri', function (data) {
 		
 		// This line sends the event (broadcasts it)
@@ -85,5 +161,8 @@ socket.on('fileperaltri', function (data) {
 	socket.broadcast.to(data.room).emit('fileperaltriser', data);
 	});	
 
+socket.on('camperaltri', function (data) {
+	 socket.broadcast.to(data.room).emit('camperaltriser', data);		
+	});	
 	
 });

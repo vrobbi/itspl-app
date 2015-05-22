@@ -1,0 +1,188 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{
+	margin:0px;
+	padding:0px;
+	font-family:colibri;
+	font-size:100%;
+	overflow-x:hidden;
+	color:#000;
+	background:#f2f2f2;
+}
+
+table, th, td, div{
+	font-family:colibri;
+	font-size:15px;
+	color:#000;
+}
+
+p, form, dl, dt, dd, h1, h2, h3, h4, h5, h6{
+	margin:0px;
+	padding:0px;
+}
+
+
+img, object, embed, video {
+	max-width: 100%;
+	border:none;
+}
+/* IE 6 does not support max-width so default to width 100% */
+.ie6 img {
+	width:100%;
+}
+
+.clear{
+	clear:both;
+}
+
+/* Html5 */
+header, section, aside, nav, footer, articel, figure{
+	display:block;
+}
+/* End Html5 */
+
+.place_holder{
+	background:#f2f2f2;
+	width:750px;
+	margin:auto;
+	padding:20px;
+	height:auto;
+}
+
+.list{
+	width:35px;
+	float:left;
+}
+
+.left_nav{
+position:relative;
+z-index:14;
+	width:35px;
+	background:#fff;
+	box-shadow:0 3px 5px #333;
+	float:left;
+	height:auto;
+}
+
+.left_nav ul{
+	margin:0px;
+	padding:0px;
+}
+
+.left_nav ul li{
+	list-style:none;
+	text-align:center;
+	padding:10px 0;
+	background:url(../images/arrow.png) no-repeat bottom right;
+	position:relative;
+	cursor:pointer;
+}
+
+.left_nav ul li.on{
+	background:#f3f2f4 url(../images/arrow.png) no-repeat bottom right;
+}
+
+/*.left_nav ul li img{
+	width:20px;
+}*/
+
+.left_nav ul li.color_box{
+	background:#000;
+	width:22px;
+	margin-left:7px;
+	margin-top:15px;
+	margin-bottom:10px;
+	cursor:pointer;
+}
+
+.right_body{
+position:relative;
+	float:right;
+	width:686px;
+	height:386px;
+	}
+
+.colorboxs{
+	position:absolute;
+	width:109px;
+	left:0;
+	top:20px;
+	display:none;
+}
+
+.pointer{
+	position:absolute;
+	background:#f3f2f4;
+	width:180px;
+	left:37px;
+	box-shadow:0px 0px 5px #333;
+	display:none;
+}
+
+.pointer ul li{
+	float:left;
+	padding:5px 4px;
+	background:none;
+	text-align:left;
+	position:relative;
+}
+
+.pointer ul li a{
+	color:#000;
+	text-decoration:none;
+}
+
+.third_sub{
+	position:absolute;
+	width:150px;
+	left:153px;
+	top:0;
+	background:#f3f2f4;
+	box-shadow:0px 0px 5px #333;
+	display:none;
+}
+
+.third_sub ul li{
+	border-bottom:1px solid #ccc;
+	float:left;
+	width:142px;
+}
+
+.no_list ul li{
+	width:auto;
+	border-bottom:none;
+}
+canvas#area2draw  {
+position:absolute;
+width:686px;
+height:386px;
+z-index:10;
+border:1px orange solid;
+background-color:transparent;
+}
+#writetext {
+background:#f3f2f4;
+}
+
+#cursors{
+	position:relative;
+}
+
+#cursors .cursor {
+	position:absolute;
+	width:auto;
+	height:22px;
+	background:url('../images/pointer.png') no-repeat -4px 0;
+	font-size:10px;
+	z-index:20;
+	}
+
+.cursor .identif{
+background-color:#FFFF00;
+width:auto;
+height:auto;
+margin-top:15px;
+border:1px green solid;
+font-size:12px;
+}

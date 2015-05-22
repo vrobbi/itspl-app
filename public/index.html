@@ -1,0 +1,248 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>::. White Board .::</title>
+<!-- Css -->
+<link href="css/main.css" rel="stylesheet">
+<!-- End Css -->
+<!-- Toogle -->
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<link href="js/jquery.minicolors.css" rel="stylesheet" />
+<script src="js/jquery.minicolors.js"></script>
+<script>
+var pencilsize = 3;
+var drawing = false;
+var controlpencil = true;
+var controlrubber = false;
+jQuery(document).ready(function(){
+
+$('#minicolore').minicolors(
+	{
+	opacity:true
+	}
+	);	
+
+
+$("#open").click(function () {
+$("#close").slideToggle("slow");
+$("#close2").hide("slow");
+$("#close3").hide("slow");
+$("#close4").hide("slow");
+$("#close5").hide("slow");
+$("#close6").hide("slow");
+$("#close7").hide("slow");
+$("#textopen").hide("slow");
+});
+$("#open2").click(function () {
+$("#close2").slideToggle("slow");
+$("#close").hide("slow");
+$("#close3").hide("slow");
+$("#close4").hide("slow");
+$("#close5").hide("slow");
+$("#close6").hide("slow");
+$("#close7").hide("slow");
+});
+$("#open3").click(function () {
+$("#close3").slideToggle("slow");
+$("#close").hide("slow");
+$("#close2").hide("slow");
+$("#close4").hide("slow");
+$("#close5").hide("slow");
+$("#close6").hide("slow");
+$("#close7").hide("slow");
+});
+$("#open4").click(function () {
+$("#close4").slideToggle("slow");
+$("#close").hide("slow");
+$("#close2").hide("slow");
+$("#close3").hide("slow");
+$("#close5").hide("slow");
+$("#close6").hide("slow");
+$("#close7").hide("slow");
+});
+$("#open5").click(function () {
+$("#close5").slideToggle("slow");
+$("#close").hide("slow");
+$("#close2").hide("slow");
+$("#close3").hide("slow");
+$("#close4").hide("slow");
+$("#close6").hide("slow");
+$("#close7").hide("slow");
+});
+$("#open6").click(function () {
+$("#close6").slideToggle("slow");
+$("#close").hide("slow");
+$("#close2").hide("slow");
+$("#close3").hide("slow");
+$("#close4").hide("slow");
+$("#close5").hide("slow");
+$("#close7").hide("slow");
+});
+$("#open7").click(function () {
+$("#close7").slideToggle("slow");
+$("#close").hide("slow");
+$("#close2").hide("slow");
+$("#close3").hide("slow");
+$("#close4").hide("slow");
+$("#close5").hide("slow");
+$("#close6").hide("slow");
+});
+});
+
+
+function text(str){
+document.getElementById('imaget').style.border="2px solid orange";
+document.getElementById('imageimg').style.border="";
+document.getElementById('imagesave').style.border="";
+document.getElementById('imagepen').style.border="";
+document.getElementById('imageraser').style.border="";
+document.getElementById('imagesel').style.border="";
+	 if(document.getElementById(str).style.display=='none')
+	 {
+		 document.getElementById(str).style.display='block';
+		 document.getElementById('writetext').style.display='block';
+	 }
+	 else{
+		 document.getElementById(str).style.display='none';
+		 document.getElementById('writetext').style.display='none';
+	 }
+	}
+	
+	function selecttext(str,str2){
+		document.getElementById(str).style.display='block';
+		document.getElementById(str2).style.display='none';
+	}
+</script>
+<!-- End Toogle -->
+</head>
+
+<body>
+<div class="place_holder">
+ <!-- Left Nav -->
+ <div class="list">
+ <div class="left_nav">
+  <ul>
+   <li class="on" id="open2"><img src="images/pencil.png" width="20" id ="imagepen">
+     <div class="pointer" id="close2">
+      <ul  id="pencil">
+       <li value="1">1.</li>
+       <li value="2">2.</li>
+       <li value="3">3.</li>
+       <li value="6">6.</li>
+       <li value="7">7.</li>
+       <li value="8">8.</li>
+      </ul>
+     </div>
+   </li>
+   <li id="open3"><img src="images/eraser.png" width="20" id ="imageraser">
+   <div class="pointer" id="close3">
+      <ul id="eraser">
+       <li value="1">1.</li>
+       <li value="2">2.</li>
+       <li value="3">3.</li>
+       <li value="6">6.</li>
+       <li value="7">7.</li>
+       <li value="8">8.</li>
+      </ul>
+     </div></li>
+   <li><img src="images/select.png" width="20" id="imagesel"></li>
+   <li><img src="images/text.png" width="20" id="imaget" onClick="text('textopen');">
+    <div class="pointer" style="width:150px;display:none" id="textopen">
+	<ul>
+	<input name="" type="text" id="writetext" placeholder="write some text here" />
+	</ul>
+      <ul>
+       <li><a href="javascript:void(0);" onClick="selecttext('selecttext1','selecttext2');">Select Font Family</a>
+        <div class="third_sub" style="width:150px;" id="selecttext1">
+        <ul id="fonttype">
+         <li>Arial</li>
+         <li>Verdana</li>
+         <li>Colibri</li>
+        </ul>
+        </div>
+       </li>
+       <li><a href="javascript:void(0);" onClick="selecttext('selecttext2','selecttext1');">Select Font Size</a>
+        <div class="third_sub no_list" style="width:150px;" id="selecttext2">
+        <ul id="fontsize">
+         <li value="10">10.</li>
+         <li value="12">12.</li>
+         <li value="14">14.</li>
+         <li value="16">16.</li>
+         <li value="18">18.</li>
+        </ul>
+        </div>
+       </li>
+      </ul>
+     </div>
+   </li>
+   <li id="open4"><img src="images/video.png" width="20" id="imagevideo">
+    <div class="pointer" id="close4">
+      <input name="" type="file">
+     </div>
+   </li>
+   <li id="open5"><img src="images/images.png" width="20" id="imageimg">
+    <div class="pointer" id="close5">
+      <input name="" type="file">
+     </div>
+   </li>
+   <li id="open6"><img src="images/save.png" width="20" id="imagesave">
+    <div class="pointer" id="close6" style="width:80px;">
+      Save as
+     </div>
+   </li>
+   <input type="text" class="minicolors" id="minicolore" value="#000000" style="font.size:12px;" data-opacity="1.0" />
+   </li>
+  </ul>
+ </div>
+ 
+ </div>
+ <!-- End Left Nav -->
+ <!-- Right Body -->
+ <div class="right_body"><canvas id="area2draw" width="686" height="386"> </canvas>
+ <div id="cursors">
+	    	<!-- The mouse pointers will be created here -->
+		</div>
+ </div>
+ <!-- End Right Body -->
+ </div>
+ <script type="text/javascript">
+ $("#pencil li").click(function() {
+    pencilsize = $(this).attr('value');
+    console.log(pencilsize);
+	});
+	$("#eraser li").click(function() {
+    var eraser = $(this).attr('value');
+    console.log(eraser);
+	});
+	$("#fonttype li").click(function() {
+    var selfontype = $(this).text();
+    console.log(selfontype);
+	});
+	$("#fontsize li").click(function() {
+    var selfontsize = $(this).attr('value');
+    console.log(selfontsize);
+	});
+	
+$("#imageraser").click(function() {
+   		document.getElementById('imageraser').style.border="2px solid orange";
+document.getElementById('imageimg').style.border="";
+document.getElementById('imagesave').style.border="";
+document.getElementById('imagepen').style.border="";
+document.getElementById('imaget').style.border="";
+document.getElementById('imagesel').style.border="";
+	});	
+	$("#imagepen").click(function() {
+   		document.getElementById('imagepen').style.border="2px solid orange";
+document.getElementById('imageimg').style.border="";
+document.getElementById('imagesave').style.border="";
+document.getElementById('imageraser').style.border="";
+document.getElementById('imaget').style.border="";
+document.getElementById('imagesel').style.border="";
+	});	
+
+ </script>
+ <script src="./socket.io/socket.io.js"></script>    
+<script src="assets/js/script.js"></script>   
+</body>
+</html>
