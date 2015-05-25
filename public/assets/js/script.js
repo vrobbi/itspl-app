@@ -11,10 +11,11 @@ jQuery(function(){
 	var filenoimage ='';
     var url = window.location.hostname;
 	var stanza = '';
+	var textdrawing ='';
 	if (location.href.indexOf('#')!= -1){
 stanza  = location.href.substring(location.href.indexOf('#')+1);
  }
-	
+
 	var positionx ='23';
 	var positiony='0';
 	var positionleft;
@@ -25,6 +26,7 @@ stanza  = location.href.substring(location.href.indexOf('#')+1);
     //canvas1 = jQuery('#paper1'),
 color = '#000000';
 	// A flag for drawing activity
+	var  offset =   canvas.offset();	
 	var drawing = false;
 	var clients = {};
 	var cursors = {};
@@ -46,16 +48,12 @@ var ctx = canvas[0].getContext('2d');
 //var ctx1 = canvas1[0].getContext('2d');	
 var spessore = jQuery('#spessore').value;
 var colorem;
-    // Force canvas to dynamically change its size to the same width/height
-    // as the browser window.
- //   canvas[0].width = document.body.clientWidth;
-//    canvas[0].height = document.body.clientHeight;
-//alert(canvas[0].width);
-    // ctx setup
+  
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.lineWidth =  2;
- ctx.font = "20px Tahoma";
+	ctx.textBaseline = "bottom";
+ ctx.font = "14px Arial";
 
 	// Generate an unique ID
 	var id = Math.round(jQuery.now()*Math.random());
@@ -90,24 +88,29 @@ stanza = data.room;
  });
 
 
-jQuery('#scrivi').keypress(function(e){
+jQuery('#writetext').keypress(function(e){
 var code = e.keyCode;
-if (code == '13') {
-  if (document.getElementById('scrivi').value.length > 0 ) {	
- 
+if (code == '13') {	
+if (document.getElementById('writetext').value.length > 0 ) {	
+  console.log(document.getElementById('writetext').value);
+ /*
  socket.emit('chat',{
 				'testochat': document.getElementById('scrivi').value,				
 				'id': id,
 				'usernamerem' : username,
 				'room' : stanza
-			});
- jQuery('<div class="testochat"><span>ME:</span> ' + document.getElementById('scrivi').value +'</div>').appendTo('#testichat');
-  document.getElementById('scrivi').value ='';
+			});   */
+ document.getElementById('divtext').style.display="block";
+ document.getElementById('divtext').style.fontSize = selfontsize + "px";
+ document.getElementById('divtext').style.fontFamily = selfontype;
+ document.getElementById('divtext').style.color = $('#minicolore').minicolors('rgbaString');
+ document.getElementById("divtext").innerHTML = document.getElementById('writetext').value;
+ 
+textdrawing = document.getElementById('writetext').value;
+  document.getElementById('writetext').value ='';
+controltext = true;
 
-var objDiv = document.getElementById("testichat");
-objDiv.scrollTop = objDiv.scrollHeight;
-
-}}
+}   }
 });
 
 $('#file-input').change(function(e) {
@@ -143,38 +146,28 @@ $('#file-input').change(function(e) {
 filenoimage ='';	
 	});	
 
-
-
-jQuery('#vedomonitor').click(function (){
-if(document.getElementById('monitorcam').style.display == 'none')   { 
-document.getElementById("monitorcam").style.display = 'block';
-document.getElementById('vedomonitor').innerHTML = ' Hide webcam monitor ';
-} else  {
-document.getElementById('monitorcam').style.display = 'none';	
-document.getElementById('vedomonitor').innerHTML = ' Show webcam monitor ';
-}										  
-});
-
-jQuery('#paper').dblclick(function (e){
-positionx = e.pageX;
-positiony= e.pageY;
-if (document.getElementById('scrivi').value.length > 1 ) {
+jQuery('#area2draw').dblclick(function (e){
+positionx = e.pageX - offset.left;
+positiony= e.pageY - offset.top;
+//console.log(offset.top);
+if (controltext &&  textdrawing.length > 0) {
 ctx.fillStyle = $('#minicolore').minicolors('rgbaString');
-ctx.font =  document.getElementById('fontsize').value +"px Tahoma";
-ctx.fillText(document.getElementById('scrivi').value, e.pageX, e.pageY); 
+ctx.font =  selfontsize +"px " + selfontype;
+ctx.fillText(document.getElementById('divtext').innerHTML, positionx, positiony); 
 
 socket.emit('doppioclick',{
-				'x': e.pageX,
-				'y': e.pageY,
-				'scrivi': document.getElementById('scrivi').value,				
+				'x': positionx,
+				'y': positiony,
+				'scrivi': textdrawing,				
 				'color': $('#minicolore').minicolors('rgbaString'),
 				'id': id,
-				'spessremo' : document.getElementById('spessore').value,
-				'fontsizerem': document.getElementById('fontsize').value,
+			//	'spessremo' : document.getElementById('spessore').value,
+				'fontsizerem': selfontsize +'px ' + selfontype,
 				'room' : stanza
 			});
-
-document.getElementById('scrivi').value ='';
+textdrawing ="";
+document.getElementById("divtext").innerHTML ="";
+document.getElementById('divtext').style.display="none";
 }	
 									
 });	
@@ -220,7 +213,7 @@ reader.onload = SaveToDisk(data.filenoimage,unknown);
 	
  socket.on('doppioclickser', function (data) {
  ctx.fillStyle = data.color;
- ctx.font = data.fontsizerem + "px Tahoma";
+ ctx.font = data.fontsizerem;
   ctx.fillText(data.scrivi, data.x, data.y); 
           
 	});	
@@ -279,29 +272,30 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
 
 	var prev = {};
 
-  		  
+/*  		  
    document.addEventListener("change", cambiaspessore, true);
   function cambiaspessore () {
 	   ctx.lineWidth = document.getElementById('spessore').value;	   
-}  
+} */ 
       
 	canvas.on('mousedown', function(e){
 		e.preventDefault();
+		jQuery("#cursors .cursor").css( "zIndex", 6);
 		drawing = true;
-		var offset =   canvas.offset();
+		 offset =   canvas.offset();
 		prev.x = e.pageX - offset.left;
 		prev.y = e.pageY - offset.top;
 	});
 	
-	canvas.bind('mouseup mouseleave', function(){
- 
-		drawing = false;
-	});
+canvas.bind('mouseup mouseleave', function(){
+ drawing = false;
+ jQuery("#cursors .cursor").css( "zIndex", 10);
+ });
 
 	var lastEmit = jQuery.now();
 
 	canvas.on('mousemove', function(e){
-	  offset =   canvas.offset();	
+ offset =   canvas.offset();	
 	 positionleft =  e.pageX - offset.left;
 	 positiontop = e.pageY- offset.top;
 								 
@@ -329,20 +323,22 @@ document.getElementById('frecce').style.backgroundColor ='#ffff00';
 		// Draw a line for the current user's movement, as it is
 		// not received in the socket.on('moving') event above
 		
+		if (controltext){
+document.getElementById('divtext').style.left = (positionleft +1) +'px';
+document.getElementById('divtext').style.top = (positiontop-document.getElementById('divtext').offsetHeight+1) +'px';	
+console.log(document.getElementById('divtext').clientHeight);
+			 } 
+		
 		if (controlrubber){
-	jQuery("#divrubber").css( "zIndex", 11);
-	document.getElementById('divrubber').style.left = (positionleft - rubbersize-6) +'px';
+document.getElementById('divrubber').style.left = (positionleft - rubbersize-6) +'px';
 document.getElementById('divrubber').style.top = positiontop +'px';
 			  if (drawing) {
-	  jQuery("#divrubber").css( "zIndex", 13);
-ctx.clearRect(positionleft - rubbersize-6, positiontop, rubbersize, rubbersize);
+	ctx.clearRect(positionleft - rubbersize-6, positiontop, rubbersize, rubbersize);
 		}
 			 } 
 		
-		if(drawing  && (!controlrubber)){
-       //     ctx.strokeStyle = document.getElementById('minicolore').value;
-	//  ctx.strokeStyle = "#ff0000";
-			drawLine(prev.x, prev.y, positionleft, positiontop);
+		if(drawing  && (!controlrubber  && !controltext)){
+    	drawLine(prev.x, prev.y, positionleft, positiontop);
 			prev.x = positionleft;
 			prev.y = positiontop;
 		}
@@ -352,7 +348,7 @@ ctx.clearRect(positionleft - rubbersize-6, positiontop, rubbersize, rubbersize);
     setInterval(function(){
         var totalOnline = 0;
         for(var ident in clients){
-            if(jQuery.now() - clients[ident].updated > 16000){
+            if(jQuery.now() - clients[ident].updated > 10000){
 
                 // Last update was more than 10 seconds ago.
                 // This user has probably closed the page
@@ -365,7 +361,7 @@ ctx.clearRect(positionleft - rubbersize-6, positiontop, rubbersize, rubbersize);
 			 totalOnline++;			
         }}
   //      jQuery('#onlineCounter').html('Users connected: '+totalOnline);
-    },16000);
+    },10000);
 /*	
 canvas.addEventListener("dragover", function (evt) {
 evt.preventDefault();
@@ -390,13 +386,13 @@ evt.preventDefault();
 */
 //// end setinterval function ****************************
 	function drawLine(fromx, fromy, tox, toy){
-	ctx.strokeStyle = $('#minicolore').minicolors('rgbaString');
+	 ctx.strokeStyle = $('#minicolore').minicolors('rgbaString');
        ctx.lineWidth = pencilsize;	
 	   ctx.beginPath();
 		ctx.moveTo(fromx, fromy);
 		ctx.lineTo(tox, toy);
 		ctx.stroke();
-	}
+}
 	
 	function drawLinerem(fromx, fromy, tox, toy,spessore,colorem){
 		ctx.strokeStyle = colorem;

@@ -11,11 +11,14 @@
 <link href="js/jquery.minicolors.css" rel="stylesheet" />
 <script src="js/jquery.minicolors.js"></script>
 <script>
+var selfontype = "Verdana";
+var selfontsize = 14;
 var pencilsize = 3;
 var rubbersize   = 30;
 var drawing = false;
 var controlpencil = true;
 var controlrubber = false;
+var controltext = false;
 jQuery(document).ready(function(){
 
 $('#minicolore').minicolors(
@@ -95,13 +98,9 @@ $("#close6").hide("slow");
 
 
 function text(str){
-document.getElementById('imaget').style.border="2px solid orange";
-document.getElementById('imageimg').style.border="";
-document.getElementById('imagesave').style.border="";
-document.getElementById('imagepen').style.border="";
-document.getElementById('imageraser').style.border="";
-document.getElementById('imagesel').style.border="";
-	 if(document.getElementById(str).style.display=='none')
+controlpencil = false;
+controlrubber =    false;
+ if(document.getElementById(str).style.display=='none')
 	 {
 		 document.getElementById(str).style.display='block';
 		 document.getElementById('writetext').style.display='block';
@@ -126,7 +125,7 @@ document.getElementById('imagesel').style.border="";
  <div class="list">
  <div class="left_nav">
   <ul>
-   <li class="on" id="open2"><img src="images/pencil.png" width="20" id ="imagepen">
+   <li class="on" id="open2"><img src="images/pencil.png" width="20" id ="imagepen" class="imgborder">
      <div class="pointer" id="close2">
       <ul  id="pencil">
        <li value="1">1.</li>
@@ -138,7 +137,7 @@ document.getElementById('imagesel').style.border="";
       </ul>
      </div>
    </li>
-   <li id="open3"><img src="images/eraser.png" width="20" id ="imageraser">
+   <li id="open3"><img src="images/eraser.png" width="20" id ="imageraser" class="imgborder">
    <div class="pointer" id="close3">
       <ul id="eraser">
        <li value="10">1.</li>
@@ -146,11 +145,11 @@ document.getElementById('imagesel').style.border="";
        <li value="30">3.</li>
        <li value="60">6.</li>
        <li value="70">7.</li>
-       <li value="80">8.</li>
+       <li value="90">8.</li>
       </ul>
      </div></li>
-   <li><img src="images/select.png" width="20" id="imagesel"></li>
-   <li><img src="images/text.png" width="20" id="imaget" onClick="text('textopen');">
+   <li><img src="images/select.png" width="20" id="imagesel" class="imgborder"></li>
+   <li><img src="images/text.png" width="20" id="imaget" class="imgborder" onClick="text('textopen');">
     <div class="pointer" style="width:150px;display:none" id="textopen">
 	<ul>
 	<input name="" type="text" id="writetext" placeholder="write some text here" />
@@ -179,17 +178,17 @@ document.getElementById('imagesel').style.border="";
       </ul>
      </div>
    </li>
-   <li id="open4"><img src="images/video.png" width="20" id="imagevideo">
+   <li id="open4"><img src="images/video.png" width="20" id="imagevideo" class="imgborder" />
     <div class="pointer" id="close4">
       <input name="" type="file">
      </div>
    </li>
-   <li id="open5"><img src="images/images.png" width="20" id="imageimg">
+   <li id="open5"><img src="images/images.png" width="20" id="imageimg" class="imgborder" />
     <div class="pointer" id="close5">
       <input name="" type="file">
      </div>
    </li>
-   <li id="open6"><img src="images/save.png" width="20" id="imagesave">
+   <li id="open6"><img src="images/save.png" width="20" id="imagesave" class="imgborder" />
     <div class="pointer" id="close6" style="width:80px;">
       Save as
      </div>
@@ -202,11 +201,14 @@ document.getElementById('imagesel').style.border="";
  </div>
  <!-- End Left Nav -->
  <!-- Right Body -->
- <div class="right_body"><canvas id="area2draw" width="686" height="386"> </canvas>
+ 
+ <div class="right_body">
+ <canvas id="area2draw" width="686" height="386"> </canvas>
  <div id="cursors">
 	    	<!-- The mouse pointers will be created here -->
-		</div>
-<div id="divrubber" title="erasing area" alt="erasing area"> </div>		
+		</div> 
+ <div id="divrubber" title="erasing area" alt="erasing area"> </div>
+ <div id="divtext" title="text to write on board" alt="text to write on board"> </div>		
  </div>
  <!-- End Right Body -->
  </div>
@@ -228,31 +230,40 @@ document.getElementById('divrubber').style.height= rubbersize + "px";
 document.getElementById('divrubber').style.display="block";
 	});
 	$("#fonttype li").click(function() {
-    var selfontype = $(this).text();
+    selfontype = $(this).text();
+document.getElementById('divtext').style.fontFamily = selfontype;	
     console.log(selfontype);
 	});
 	$("#fontsize li").click(function() {
-    var selfontsize = $(this).attr('value');
-    console.log(selfontsize);
+    selfontsize = $(this).attr('value');
+	document.getElementById('divtext').style.fontSize = selfontsize + "px";
+	console.log(selfontsize);
 	});
 	
 $("#imageraser").click(function() {
-   		document.getElementById('imageraser').style.border="2px solid orange";
-document.getElementById('imageimg').style.border="";
-document.getElementById('imagesave').style.border="";
-document.getElementById('imagepen').style.border="";
-document.getElementById('imaget').style.border="";
-document.getElementById('imagesel').style.border="";
+$("li .imgborder").css("border","");
+document.getElementById('imageraser').style.border="2px solid orange";
+controlpencil = false;
+controltext = false;
+controlrubber = true;
+document.getElementById("divrubber").style.display="block";
 	});	
-	$("#imagepen").click(function() {
-   		document.getElementById('imagepen').style.border="2px solid orange";
-document.getElementById('imageimg').style.border="";
-document.getElementById('imagesave').style.border="";
-document.getElementById('imageraser').style.border="";
-document.getElementById('imaget').style.border="";
-document.getElementById('imagesel').style.border="";
+$("#imagepen").click(function() {
+document.getElementById("divrubber").style.display="none";
+$("li .imgborder").css("border","");
+document.getElementById('imagepen').style.border="2px solid orange";
+controlpencil = true;
+controlrubber = false;
+controltext = false;
 	});	
-
+$("#imaget").click(function() {
+document.getElementById('divrubber').style.display="none";
+$("li .imgborder").css("border","");
+document.getElementById('imaget').style.border="2px solid orange";
+controlpencil = false;
+controlrubber = false;	
+controltext = true;
+});	
  </script>
  <script src="./socket.io/socket.io.js"></script>    
 <script src="assets/js/script.js"></script>   
