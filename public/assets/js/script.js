@@ -113,11 +113,10 @@ controltext = true;
 }   }
 });
 
-$('#file-input').change(function(e) {
+$('#file-image').change(function(e) {
         var file = e.target.files[0],
             imageType = /image.*/;
-			console.log (file.type);
-		var reader = new FileReader();
+			var reader = new FileReader();
 			  
     if (!file.type.match(imageType)) { 
 	filenoimage =  file.name;
@@ -141,8 +140,7 @@ $('#file-input').change(function(e) {
 		filenoimage ='';
        reader.onload = fileOnload;
  reader.readAsDataURL(file);  
-		     
-	}
+}
 filenoimage ='';	
 	});	
 
@@ -227,16 +225,11 @@ var objDiv1 = document.getElementById("testichat");
 objDiv1.scrollTop = objDiv1.scrollHeight;
 	});
   
-  socket.on('suonacampser', function (data) {
- if (document.getElementById('faisuonare').checked) {
-  //    var thissound=document.getElementById("audio1");
-document.getElementById("audio1").play();												  
-			 }	
-		});
+
   
   socket.on('listautentiser', function (data) {
 jQuery('<div class="testochatser"><span>FROM SERVER:</span> '+ data.listautenti +'</div>').appendTo('#testichat');
-document.getElementById('frecce').style.backgroundColor ='#ffff00'; 
+//document.getElementById('frecce').style.backgroundColor ='#ffff00'; 
 		});
  	
 	socket.on('moving', function (data) {
@@ -405,11 +398,12 @@ evt.preventDefault();
 
 function fileOnload(e) {
         var img = $('<img>', { src: e.target.result });
-		// alert(img.src.value);
+	//	alert(img.src.value);
    //     var canvas1 = $('#paper')[0];
       //     var context1 = canvas1.getContext('2d');
         img.load(function() {
             ctx.drawImage(this, positionx, positiony);
+			document.getElementById('file-image').value="";
 			socket.emit('fileperaltri',{
 				'id': id,
 				'positionx': positionx,
@@ -479,38 +473,7 @@ var idtempo;
       console.log("An error occured! " + err);
     }
   );
-/*
-  video.addEventListener('canplay', function(ev){
-    if (!streaming) {
-      height = video.videoHeight / (video.videoWidth/width);
-      video.setAttribute('width', 320);
-      video.setAttribute('height', 240);
-//	  video.setAttribute('maxFrameRate',5);
- //     canvas.setAttribute('width', width);
-   //   canvas.setAttribute('height', height);
-      streaming = true;
-    }
-		  
-  }, false);
 
-
-
- 
-  
-  
-document.getElementById('autocamabi').addEventListener('change', function(ev){
-																		  
-if (document.getElementById('autocamabi').checked) {	
-document.getElementById('tempocam').disabled = true;
-idtempo = setInterval(function() {
-takepicture();	
-},document.getElementById('tempocam').value);
-}else{
-clearInterval(idtempo);
-document.getElementById('tempocam').disabled = false;
-}   
-  }, false);
-*/
 })();
 
 

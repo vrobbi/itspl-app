@@ -45,19 +45,7 @@ socket.join('public');
 
 socket.on('disconnect', function () {
 								  
-console.log('disconnesso');								  /*
-var roster = io.sockets.clients(data.room);
-var listautenti = '';
-roster.forEach(function(client) {
-listautenti =	listautenti +  client.nickname + '<br />';
-}); 
-listautenti = 'A USER HAS DISCONNECTED - LIST USERS IN THIS ROOM: ' +  listautenti;
-
-socket.broadcast.to(data.room).emit('listautentiser', {
-							'listautenti' : listautenti		
-									});
-*/
-  });
+console.log('disconnesso');  });
 
 
 socket.on('suonacamp', function (data) {
