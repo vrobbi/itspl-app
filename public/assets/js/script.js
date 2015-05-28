@@ -15,7 +15,7 @@ jQuery(function(){
 	if (location.href.indexOf('#')!= -1){
 stanza  = location.href.substring(location.href.indexOf('#')+1);
  }
-
+    var controlimg = true;
 	var positionx ='23';
 	var positiony='0';
 	var positionleft;
@@ -78,38 +78,27 @@ socket.on('setuproomserKO', function (data) {
 stanza = data.room;	
 document.getElementById('audiocall').disabled = false;
 document.getElementById('videocall').disabled = false;
-alert	(data.inforoom); 	
+
 });
  
-  socket.on('setuproomser', function (data) {
-stanza = data.room;	
- jQuery('<div class="testochatser"><span>FROM SERVER:</span> '+ data.inforoom + data.listautenti +'</div>').appendTo('#testichat');
-// document.getElementById('frecce').style.backgroundColor ='#ffff00';
- });
 
-
-jQuery('#writetext').keypress(function(e){
+jQuery('#writetext').keyup(function(e){
 var code = e.keyCode;
-if (code == '13') {	
+	
 if (document.getElementById('writetext').value.length > 0 ) {	
   console.log(document.getElementById('writetext').value);
- /*
- socket.emit('chat',{
-				'testochat': document.getElementById('scrivi').value,				
-				'id': id,
-				'usernamerem' : username,
-				'room' : stanza
-			});   */
+ 
  document.getElementById('divtext').style.display="block";
  document.getElementById('divtext').style.fontSize = selfontsize + "px";
  document.getElementById('divtext').style.fontFamily = selfontype;
  document.getElementById('divtext').style.color = $('#minicolore').minicolors('rgbaString');
  document.getElementById("divtext").innerHTML = document.getElementById('writetext').value;
- 
-textdrawing = document.getElementById('writetext').value;
-  document.getElementById('writetext').value ='';
-controltext = true;
+ controltext = true;
 
+  if (code == '13') {
+	  textdrawing = document.getElementById('writetext').value;
+  document.getElementById('writetext').value ='';
+ text('textopen');
 }   }
 });
 
@@ -138,7 +127,26 @@ $('#file-image').change(function(e) {
 				});		
 	} else {
 		filenoimage ='';
-       reader.onload = fileOnload;
+		 reader.onload = (function(e) {
+		    var img = $('<img>', { src: e.target.result });
+	      img.load(function() {
+           ctx.drawImage(this, positionx, positiony);
+			document.getElementById('file-image').value="";
+		//	document.getElementById('divtext').style.display="block";
+		//  	controltext =true;
+	//	$('#imgloading').attr('src',e.target.result).width('auto').height('auto'); // setting ur image here
+		//	$(img).attr('src', e.target.result).css('max-width', img.width+'px');
+		//	alert(img.src.width   + '      '   + img.src.height);
+			socket.emit('fileperaltri',{
+				'id': id,
+				'positionx': positionx,
+				'positiony': positiony,
+				'fileperaltri':  this.src,
+				'room': stanza,
+				'filenoimage' : ''
+				});	
+        });
+		  });	   
  reader.readAsDataURL(file);  
 }
 filenoimage ='';	
@@ -167,6 +175,11 @@ textdrawing ="";
 document.getElementById("divtext").innerHTML ="";
 document.getElementById('divtext').style.display="none";
 }	
+
+if (controlimg === true) {
+	
+	
+}
 									
 });	
 jQuery('#salvafoto').click(function (){
@@ -176,17 +189,6 @@ window.open(document.getElementById("canvasimg").src, "toDataURL() image", "widt
 										  
 });
 
-
-  
-  jQuery('#suonacamp').click(function (){
-
-socket.emit('suonacamp',{
-				'id': id,
-				'room' : stanza
-			});
-
-});  
- 
  
  socket.on('fileperaltriser', function (data) {
  if (data.filenoimage =='') {
@@ -265,15 +267,11 @@ jQuery('<div class="testochatser"><span>FROM SERVER:</span> '+ data.listautenti 
 
 	var prev = {};
 
-/*  		  
-   document.addEventListener("change", cambiaspessore, true);
-  function cambiaspessore () {
-	   ctx.lineWidth = document.getElementById('spessore').value;	   
-} */ 
       
 	canvas.on('mousedown', function(e){
 		e.preventDefault();
 		jQuery("#cursors .cursor").css( "zIndex", 6);
+		jQuery("#divrubber").css( "zIndex", 6);
 		drawing = true;
 		 offset =   canvas.offset();
 		prev.x = e.pageX - offset.left;
@@ -283,6 +281,7 @@ jQuery('<div class="testochatser"><span>FROM SERVER:</span> '+ data.listautenti 
 canvas.bind('mouseup mouseleave', function(){
  drawing = false;
  jQuery("#cursors .cursor").css( "zIndex", 10);
+ jQuery("#divrubber").css( "zIndex", 11);
  });
 
 	var lastEmit = jQuery.now();
@@ -319,8 +318,7 @@ canvas.bind('mouseup mouseleave', function(){
 		if (controltext){
 document.getElementById('divtext').style.left = (positionleft +1) +'px';
 document.getElementById('divtext').style.top = (positiontop-document.getElementById('divtext').offsetHeight+1) +'px';	
-console.log(document.getElementById('divtext').clientHeight);
-			 } 
+ } 
 		
 		if (controlrubber){
 document.getElementById('divrubber').style.left = (positionleft - rubbersize-6) +'px';
@@ -396,25 +394,6 @@ evt.preventDefault();
 		ctx.stroke();
 	}
 
-function fileOnload(e) {
-        var img = $('<img>', { src: e.target.result });
-	//	alert(img.src.value);
-   //     var canvas1 = $('#paper')[0];
-      //     var context1 = canvas1.getContext('2d');
-        img.load(function() {
-            ctx.drawImage(this, positionx, positiony);
-			document.getElementById('file-image').value="";
-			socket.emit('fileperaltri',{
-				'id': id,
-				'positionx': positionx,
-				'positiony': positiony,
-				'fileperaltri':  this.src,
-				'room': stanza,
-				'filenoimage' : ''
-				});	
-        });
-    }
-	
 
 function SaveToDisk(fileURL, fileName) {
     // for non-IE
