@@ -353,13 +353,18 @@ document.getElementById('divrubber').style.top = positiontop +'px';
         }}
   //      jQuery('#onlineCounter').html('Users connected: '+totalOnline);
     },10000);
-/*	
-canvas.addEventListener("dragover", function (evt) {
+var	img = document.createElement("img");
+img.addEventListener("load", function (e) {
+									   
+ctx.drawImage(img,positionx, positiony);
+}, false);
+var canvasdrop = document.getElementById("area2draw");
+canvasdrop.addEventListener("dragover", function (evt) {
 evt.preventDefault();
 }, false);
 
 
-canvas.addEventListener("drop", function (evt) {
+canvasdrop.addEventListener("drop", function (evt) {
 var files = evt.dataTransfer.files;
 if (files.length > 0) {
 var file = files[0];
@@ -368,13 +373,22 @@ var reader = new FileReader();
 // Note: addEventListener doesn't work in Google Chrome for this event
 reader.onload = function (evt) {
 img.src = evt.target.result;
+socket.emit('fileperaltri',{
+				'id': id,
+				'positionx': positionx,
+				'positiony': positiony,
+				'fileperaltri':  img.src,
+				'room': stanza,
+				'filenoimage' : ''
+				});	
 };
 reader.readAsDataURL(file);
+
 }
 }
 evt.preventDefault();
 }, false); 
-*/
+
 //// end setinterval function ****************************
 	function drawLine(fromx, fromy, tox, toy){
 	 ctx.strokeStyle = $('#minicolore').minicolors('rgbaString');
@@ -417,44 +431,6 @@ function SaveToDisk(fileURL, fileName) {
         _window.close();
     }
 }
-	
-
-	
-(function() {
-var idtempo;
-  var streaming = false,
-      video        = document.getElementById('video'),
-  	paper1  = document.getElementById('paper1'),
-      startbutton  = document.getElementById('catturacam'),
-      width = 320,
-      height = 240;
-
-  navigator.getMedia = ( navigator.getUserMedia || 
-                         navigator.webkitGetUserMedia ||
-                         navigator.mozGetUserMedia ||
-                         navigator.msGetUserMedia);
-
-  navigator.getMedia(
-    { 
-      video: true, 
-      audio: false 
-    },
-    function(stream) {
-      if (navigator.mozGetUserMedia) { 
-        video.mozSrcObject = stream;
-      } else {
-        var vendorURL = window.URL || window.webkitURL;
-		  video.src = vendorURL ? vendorURL.createObjectURL(stream) : stream;
-		        }
-      video.play();
-    },
-    function(err) {
-      console.log("An error occured! " + err);
-    }
-  );
-
-})();
-
 
 });
 
