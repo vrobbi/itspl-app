@@ -9,7 +9,7 @@ jQuery(function(){
 	// The URL of your web server (the port is set in app.js)
 	//var url = 'http://localhost:3000';
 	var filenoimage ='';
-    var url = window.location.hostname;
+	var url = window.location.hostname;
 	var stanza = '';
 	var textdrawing ='';
 	if (location.href.indexOf('#')!= -1){
@@ -86,7 +86,6 @@ jQuery('#writetext').keyup(function(e){
 var code = e.keyCode;
 	
 if (document.getElementById('writetext').value.length > 0 ) {	
-  console.log(document.getElementById('writetext').value);
  
  document.getElementById('divtext').style.display="block";
  document.getElementById('divtext').style.fontSize = selfontsize + "px";
@@ -388,6 +387,33 @@ reader.readAsDataURL(file);
 }
 evt.preventDefault();
 }, false); 
+
+
+  socket.on('setupcanvasser', function (data) {
+ var imgdaclient = new Image();
+ console.log(data.canvasstring);
+imgdaclient.src = data.canvasstring; 
+imgdaclient.onload = function() {
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ ctx.drawImage(imgdaclient,0,0);         
+ string64data =  data.canvasstring;
+}
+	});	
+$("#imagesave").click(function() {
+canvas2base64();
+	});	
+  
+  
+  function canvas2base64()  {
+var string_canvas = canvas[0].toDataURL();
+var string64data  = string_canvas;	
+socket.emit('base64data',{
+				'base64data' : stanza + '_' + string64data
+				   });
+console.log ('Bytes sent to server: ' + string_canvas.length);
+	
+ }
+
 
 //// end setinterval function ****************************
 	function drawLine(fromx, fromy, tox, toy){

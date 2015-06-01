@@ -6,7 +6,8 @@ var app = require('http').createServer(handler),
 // This will make all the files in the current folder
 // accessible from the web
 var fileServer = new nstatic.Server('./public');
-	
+var   data64 = [];	
+var len1 =0;
 // This is the port for our web server.
 // you will need to go to http://localhost:3000 to see it
 var port = process.env.PORT || 8080; // Cloud9 + Heroku || localhost
@@ -45,12 +46,8 @@ socket.join('public');
 
 socket.on('disconnect', function () {
 								  
-console.log('disconnesso');  });
+console.log('disconnected');  });
 
-
-socket.on('suonacamp', function (data) {
-socket.broadcast.to(data.room).emit('suonacampser', data);
-});
 
  socket.on('setuproom', function (data) { 
  var myregexp = /^[a-zA-Z0-9]+$/;
@@ -61,44 +58,28 @@ socket.leave('public');
  socket.nickname = data.usernamerem;
  // console.log(io.sockets.manager.rooms);
   console.log (Object.keys(io.sockets.manager.rooms));
- 
+/* 
 var roster = io.sockets.clients(data.room);
 var listautenti = '';
 roster.forEach(function(client) {
 listautenti =	listautenti +  client.nickname + '<br />';
 }); 
-listautenti = 'LIST USERS IN THIS ROOM: ' +  listautenti;
- 
- 
-socket.emit('setuproomser', {
+*/
+ for (n=0; n<len1; n++) {
+		// var lunghezzastringa = urlimageroom[i].length;
+var occorrenza640  = data64[n].indexOf('_'); 
+if (data64[n].substr(0,occorrenza640) === data.room) {
+socket.emit('setupcanvasser', {
 			'room' :  data.room,
-				'inforoom' : 'YOUR ROOM NAME IS VALID,<br />NOW YOUR PRIVATE ROOM IS ' + data.room + '<br />',
-				'listautenti' : listautenti
-			});
-socket.broadcast.to(data.room).emit('suonacampser', data);
-socket.broadcast.to(data.room).emit('listautentiser', {
-							'listautenti' : listautenti		
-									});
+			'canvasstring' : data64[n].substr(occorrenza640+1)				
+			});		
+break;
+ }
+}
 
 }  else {
 //		socket.join('public');	
-socket.nickname = data.usernamerem;		
- console.log('ERRORE STANZA');
-// console.log (Object.keys(io.sockets.manager.rooms));
-	socket.emit('setuproomserKO', {
-				'room' : 'public',
-				'inforoom' : 'YOUR ROOM NAME IS NOT VALID,   REMEMBER TO USE AT LEAST THREE CHARACTERS OF TYPE ONLY LETTERS AND/OR NUMBERS, NOTHING ELSE.  NOW YOUR ROOM IS PUBLIC'
-			}); 
- var roster = io.sockets.clients('public');
-var listautenti = '';
-roster.forEach(function(client) {
-listautenti =	listautenti +  client.nickname + '<br />';
-}); 
-console.log (listautenti);
-listautenti = 'LIST USERS IN THIS ROOM: ' +  listautenti;	
-socket.broadcast.to(data.room).emit('listautentiser', {
-							'listautenti' : listautenti		
-									});
+
 }
 	});
 
@@ -110,23 +91,31 @@ socket.broadcast.to(data.room).emit('listautentiser', {
 	    //	}  
 	});
 	
-socket.on('salvasulserver', function (data) {
-		
-	//	var object = { foo: data.dataserver };
-	var datidalclient = data.dataserver.replace(/^data:image\/\w+;base64,/, "");
-var buf = new Buffer(datidalclient, 'base64');
-//var string = 'scrivo qualche cosa';
-var req = client.put(data.orario + '.png', {
-    'Content-Length': buf.length,
-	'Content-Type': 'image/png'
-});
-req.on('response', function(res){
-  if (200 == res.statusCode) {
-//    console.log('saved to %s', req.url);    
-  }
-});
-req.end(buf);		
-});	
+
+socket.on('base64data', function (data) { 
+var occorrenza64 ='';	
+var insertion =false;
+var occorrenza64 = data.base64data.indexOf('_');	
+var extractroom =  data.base64data.substr(0,occorrenza64);
+len1 = data64.length;
+	// console.log(len);
+ 	
+for (i=0; i<len1; i++) {
+occorrenza64  = data64[i].indexOf('_'); 
+if (data64[i].substr(0,occorrenza64) === extractroom ) {
+data64[i] =  data.base64data;	
+insertion = true;
+console.log('update arraycanvas ' + data64.length);
+break;
+ }
+
+}
+if (insertion == false) {
+data64.push(data.base64data);
+console.log	(data64.length + ' new insert') ;
+}
+}); 
+
 
 socket.on('doppioclick', function (data) {
 		

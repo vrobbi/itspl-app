@@ -188,11 +188,8 @@ controlrubber =    false;
       <input name="" type="file" id="file-image">
      </div>
    </li>
-   <li id="open6"><img src="images/save.png" width="20" id="imagesave" class="imgborder" />
-    <div class="pointer" id="close6" style="width:80px;">
-      Save as
-     </div>
-   </li>
+   <li id="open6"><img src="images/save.png" width="20" id="imagesave" class="imgborder" alt ="save this canvas on server temporaly" title="save this canvas on server temporaly" />
+    </li>
    <input type="text" class="minicolors" id="minicolore" value="#000000" style="font.size:12px;" data-opacity="1.0" />
    </li>
   </ul>
@@ -203,7 +200,7 @@ controlrubber =    false;
  <!-- Right Body -->
  <img src="" style="width:auto;height:auto;border 1px green solid;position:absolute" id="imgloading" />
  <div class="right_body">
- <canvas id="area2draw" width="686" height="386" droppable="true"> </canvas>
+ <canvas id="area2draw" width="686" height="386"> </canvas>
  <div id="cursors">
 	    	<!-- The mouse pointers will be created here -->
 		</div> 
@@ -267,6 +264,9 @@ controltext = true;
 });	
  </script>
  <script src="./socket.io/socket.io.js"></script>    
-<script src="assets/js/script.js"></script>   
+<script src="assets/js/script.js"></script> 
+<script type="text/javascript">  
+
+	</script>
 </body>
 </html>
