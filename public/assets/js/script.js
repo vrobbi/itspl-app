@@ -166,8 +166,7 @@ socket.emit('doppioclick',{
 				'scrivi': textdrawing,				
 				'color': $('#minicolore').minicolors('rgbaString'),
 				'id': id,
-			//	'spessremo' : document.getElementById('spessore').value,
-				'fontsizerem': selfontsize +'px ' + selfontype,
+			'fontsizerem': selfontsize +'px ' + selfontype,
 				'room' : stanza
 			});
 textdrawing ="";
@@ -181,12 +180,6 @@ if (controlimg === true) {
 }
 									
 });	
-jQuery('#salvafoto').click(function (){
-var dataURL = canvas[0].toDataURL();
-document.getElementById("canvasimg").src = dataURL;  
-window.open(document.getElementById("canvasimg").src, "toDataURL() image", "width=1000, height=1000");									
-										  
-});
 
  
  socket.on('fileperaltriser', function (data) {
@@ -271,6 +264,7 @@ jQuery('<div class="testochatser"><span>FROM SERVER:</span> '+ data.listautenti 
 		e.preventDefault();
 		jQuery("#cursors .cursor").css( "zIndex", 6);
 		jQuery("#divrubber").css( "zIndex", 6);
+		jQuery("#divtext").css( "zIndex", 11);
 		drawing = true;
 		 offset =   canvas.offset();
 		prev.x = e.pageX - offset.left;
@@ -315,6 +309,7 @@ canvas.bind('mouseup mouseleave', function(){
 		// not received in the socket.on('moving') event above
 		
 		if (controltext){
+jQuery("#divtext").css( "zIndex", 6);			
 document.getElementById('divtext').style.left = (positionleft +1) +'px';
 document.getElementById('divtext').style.top = (positiontop-document.getElementById('divtext').offsetHeight+1) +'px';	
  } 
